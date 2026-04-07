@@ -38,3 +38,19 @@ func TestRenderMultiLineBlockquote(t *testing.T) {
 		t.Fatalf("expected blockquote bar on at least 3 lines, got %d bars in output: %q", barCount, out)
 	}
 }
+
+func TestRenderLongBlockquoteWrapsWithBarOnEachLine(t *testing.T) {
+	out := renderMarkdown(t, "> This is a very long blockquote line that should wrap across multiple rendered lines and keep the quote bar visible on each wrapped line")
+
+	lines := strings.Split(strings.TrimSpace(out), "\n")
+	barCount := 0
+	for _, line := range lines {
+		if strings.Contains(line, "│") {
+			barCount++
+		}
+	}
+
+	if barCount < 2 {
+		t.Fatalf("expected wrapped blockquote with bar on multiple lines, got: %q", out)
+	}
+}

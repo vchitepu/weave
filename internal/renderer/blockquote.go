@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/util"
 )
@@ -19,8 +20,15 @@ func (r *Renderer) renderBlockquote(w util.BufWriter, source []byte, node ast.No
 	bar := r.theme.BlockquoteBar.Render("│")
 	text = strings.TrimRight(text, "\n")
 	lines := strings.Split(text, "\n")
+	wrapWidth := r.contentWidth() - 2
+	if wrapWidth < 20 {
+		wrapWidth = 20
+	}
 	for _, line := range lines {
-		_, _ = w.WriteString(pad + bar + " " + line + "\n")
+		wrapped := lipgloss.NewStyle().Width(wrapWidth).Render(line)
+		for _, part := range strings.Split(wrapped, "\n") {
+			_, _ = w.WriteString(pad + bar + " " + part + "\n")
+		}
 	}
 	_, _ = w.WriteString("\n")
 
