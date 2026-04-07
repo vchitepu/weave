@@ -29,6 +29,8 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindParagraph, r.renderParagraph)
 	reg.Register(ast.KindHeading, r.renderHeadingEntering)
 	reg.Register(ast.KindThematicBreak, r.renderThematicBreak)
+	reg.Register(ast.KindFencedCodeBlock, r.renderFencedCodeBlock)
+	reg.Register(ast.KindCodeBlock, r.renderCodeBlock)
 
 	// Inline nodes
 	reg.Register(ast.KindText, r.renderText)
