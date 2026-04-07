@@ -32,6 +32,10 @@ type Renderer struct {
 	theme     theme.Theme
 	width     int
 	tableData *tableState
+	// listPrefixWidths tracks current list-item marker widths for wrapped text.
+	listPrefixWidths []int
+	// tightListItemActive indicates we're buffering inline text for a tight list item.
+	tightListItemActive bool
 	// paraBuf accumulates inline content while inside a paragraph so the full
 	// text can be word-wrapped as a unit before being written.
 	paraBuf *strings.Builder
@@ -69,6 +73,23 @@ func (r *Renderer) wrapText(s string) string {
 		out.WriteString(pad + line + "\n")
 	}
 	return out.String()
+}
+
+func (r *Renderer) writeWrappedListParagraph(w util.BufWriter, s string, prefixWidth int) {
+	wrapWidth := r.contentWidth() - prefixWidth
+	if wrapWidth < 10 {
+		wrapWidth = 10
+	}
+	wrapped := lipgloss.NewStyle().Width(wrapWidth).Render(strings.TrimRight(s, "\n"))
+	lines := strings.Split(wrapped, "\n")
+	if len(lines) == 0 {
+		return
+	}
+	_, _ = w.WriteString(lines[0])
+	cont := strings.Repeat(" ", prefixWidth)
+	for _, line := range lines[1:] {
+		_, _ = w.WriteString("\n" + cont + line)
+	}
 }
 
 // RegisterFuncs registers AST node render functions.
@@ -115,7 +136,11 @@ func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Nod
 
 	// Flush buffered paragraph text, word-wrapped and left-padded.
 	if r.paraBuf != nil {
-		_, _ = w.WriteString(r.wrapText(r.paraBuf.String()))
+		if node.Parent() != nil && node.Parent().Kind() == ast.KindListItem && len(r.listPrefixWidths) > 0 {
+			r.writeWrappedListParagraph(w, r.paraBuf.String(), r.listPrefixWidths[len(r.listPrefixWidths)-1])
+		} else {
+			_, _ = w.WriteString(r.wrapText(r.paraBuf.String()))
+		}
 		r.paraBuf = nil
 	}
 
@@ -135,6 +160,16 @@ func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, en
 	}
 	n := node.(*ast.Text)
 	text := string(n.Segment.Value(source))
+
+	if r.paraBuf == nil && len(r.listPrefixWidths) > 0 {
+		for p := node.Parent(); p != nil; p = p.Parent() {
+			if p.Kind() == ast.KindListItem {
+				r.paraBuf = &strings.Builder{}
+				r.tightListItemActive = true
+				break
+			}
+		}
+	}
 
 	if r.paraBuf != nil {
 		r.paraBuf.WriteString(text)

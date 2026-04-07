@@ -8,6 +8,8 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
+const minTableColWidth = 8
+
 // tableState accumulates rows during table rendering.
 type tableState struct {
 	headers []string
@@ -48,6 +50,8 @@ func (r *Renderer) renderTable(w util.BufWriter, source []byte, node ast.Node, e
 		}
 	}
 
+	colWidths = r.fitTableWidths(colWidths)
+
 	borderColor := r.theme.TableBorder
 	hSep := r.tableHSep(colWidths, borderColor, "├", "┼", "┤")
 	topBorder := r.tableHSep(colWidths, borderColor, "┌", "┬", "┐")
@@ -63,7 +67,7 @@ func (r *Renderer) renderTable(w util.BufWriter, source []byte, node ast.Node, e
 	// Header row
 	buf.WriteString(bStyle.Render("│"))
 	for i, h := range td.headers {
-		padded := r.padCell(h, colWidths[i])
+		padded := r.padCell(r.truncateCell(h, colWidths[i]), colWidths[i])
 		styled := r.theme.TableHeader.Render(padded)
 		buf.WriteString(" " + styled + " " + bStyle.Render("│"))
 	}
@@ -80,7 +84,7 @@ func (r *Renderer) renderTable(w util.BufWriter, source []byte, node ast.Node, e
 			if i < len(row) {
 				cell = row[i]
 			}
-			padded := r.padCell(cell, colWidths[i])
+			padded := r.padCell(r.truncateCell(cell, colWidths[i]), colWidths[i])
 			buf.WriteString(" " + padded + " " + bStyle.Render("│"))
 		}
 		buf.WriteString("\n")
@@ -114,6 +118,63 @@ func (r *Renderer) padCell(text string, width int) string {
 		padding = 0
 	}
 	return text + strings.Repeat(" ", padding)
+}
+
+func (r *Renderer) fitTableWidths(colWidths []int) []int {
+	n := len(colWidths)
+	if n == 0 {
+		return colWidths
+	}
+
+	maxWidth := r.contentWidth()
+	total := r.tableTotalWidth(colWidths)
+	for total > maxWidth {
+		idx := -1
+		maxCol := -1
+		for i, w := range colWidths {
+			if w > maxCol && w > minTableColWidth {
+				maxCol = w
+				idx = i
+			}
+		}
+		if idx == -1 {
+			break
+		}
+		colWidths[idx]--
+		total--
+	}
+
+	return colWidths
+}
+
+func (r *Renderer) tableTotalWidth(colWidths []int) int {
+	sum := 0
+	for _, w := range colWidths {
+		sum += w
+	}
+	n := len(colWidths)
+	return sum + (3 * n) + 1
+}
+
+func (r *Renderer) truncateCell(text string, width int) string {
+	if lipgloss.Width(text) <= width {
+		return text
+	}
+	if width <= 1 {
+		return "…"
+	}
+	max := width - 1
+	var out strings.Builder
+	used := 0
+	for _, r := range text {
+		rw := lipgloss.Width(string(r))
+		if used+rw > max {
+			break
+		}
+		out.WriteRune(r)
+		used += rw
+	}
+	return out.String() + "…"
 }
 
 func (r *Renderer) renderTableHeader(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {

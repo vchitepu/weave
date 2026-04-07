@@ -59,3 +59,22 @@ func TestRenderTableUnicodeCellsKeepBordersAligned(t *testing.T) {
 		}
 	}
 }
+
+func TestRenderTableRespectsRendererWidth(t *testing.T) {
+	input := "| Use case | Tool | Notes |\n|---|---|---|\n| OS and OpenLM system components | apt/deb | Managed by OpenLM, updated via standard Ubuntu apt repos + OpenLM apt repo |\n| User-facing apps | Flatpak | Via Flathub + OpenLM overlay repo |\n| Local LLM models | Ollama | Managed by Ollama daemon, not apt or Flatpak |\n| Python dependencies (LiteLLM) | pip (managed internally) | Isolated via virtualenv, not exposed to user |"
+	out := renderMarkdown(t, input)
+
+	max := 0
+	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		if w := visibleWidth(line); w > max {
+			max = w
+		}
+	}
+
+	if max > 80 {
+		t.Fatalf("expected table output max width <= 80, got %d output=%q", max, out)
+	}
+}

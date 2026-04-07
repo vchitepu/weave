@@ -3,6 +3,8 @@ package renderer
 import (
 	"strings"
 	"testing"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 func TestRenderUnorderedList(t *testing.T) {
@@ -57,5 +59,19 @@ func TestRenderListItemsSeparated(t *testing.T) {
 	}
 	if bulletLines < 3 {
 		t.Fatalf("expected at least 3 lines with bullets, got %d in output: %q", bulletLines, out)
+	}
+}
+
+func TestRenderLongListItemWrapsWithinRendererWidth(t *testing.T) {
+	input := "- OS updates: Standard Ubuntu apt security and package updates. OpenLM system components (orchestrator, event bus, LiteLLM) update via the OpenLM apt repo."
+	out := renderMarkdown(t, input)
+
+	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		if w := lipgloss.Width(line); w > 80 {
+			t.Fatalf("expected list output line width <= 80, got %d in line %q", w, line)
+		}
 	}
 }

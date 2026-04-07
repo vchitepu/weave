@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/util"
 )
@@ -17,6 +18,12 @@ func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, en
 
 func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
+		if r.tightListItemActive && r.paraBuf != nil && len(r.listPrefixWidths) > 0 {
+			r.writeWrappedListParagraph(w, r.paraBuf.String(), r.listPrefixWidths[len(r.listPrefixWidths)-1])
+			r.paraBuf = nil
+			r.tightListItemActive = false
+		}
+
 		// Ensure each list item ends with a newline.
 		// For loose lists (with paragraphs), renderParagraph handles the newline.
 		// For tight lists (no paragraphs), we need to add it here.
@@ -24,6 +31,9 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 		lastChild := node.LastChild()
 		if lastChild == nil || lastChild.Kind() != ast.KindParagraph {
 			_, _ = w.WriteString("\n")
+		}
+		if len(r.listPrefixWidths) > 0 {
+			r.listPrefixWidths = r.listPrefixWidths[:len(r.listPrefixWidths)-1]
 		}
 		return ast.WalkContinue, nil
 	}
@@ -50,9 +60,18 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 		if start > 0 {
 			pos = start + pos - 1
 		}
-		_, _ = w.WriteString(fmt.Sprintf("%s%s%d. ", pad, indent, pos))
+		prefix := fmt.Sprintf("%s%s%d. ", pad, indent, pos)
+		r.listPrefixWidths = append(r.listPrefixWidths, lipgloss.Width(prefix))
+		_, _ = w.WriteString(prefix)
 	} else {
-		_, _ = w.WriteString(fmt.Sprintf("%s%s• ", pad, indent))
+		prefix := fmt.Sprintf("%s%s• ", pad, indent)
+		r.listPrefixWidths = append(r.listPrefixWidths, lipgloss.Width(prefix))
+		_, _ = w.WriteString(prefix)
+	}
+
+	if node.FirstChild() != nil && node.FirstChild().Kind() == ast.KindText {
+		r.paraBuf = &strings.Builder{}
+		r.tightListItemActive = true
 	}
 
 	return ast.WalkContinue, nil
