@@ -74,6 +74,9 @@ func run(cmd *cobra.Command, args []string) error {
 	if width < 20 {
 		width = 20
 	}
+	if width > 120 {
+		width = 120
+	}
 
 	// Validate theme flag
 	if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
