@@ -32,14 +32,18 @@ func (r *Renderer) renderTable(w util.BufWriter, source []byte, node ast.Node, e
 	numCols := len(td.headers)
 	colWidths := make([]int, numCols)
 	for i, h := range td.headers {
-		if len(h) > colWidths[i] {
-			colWidths[i] = len(h)
+		hw := lipgloss.Width(h)
+		if hw > colWidths[i] {
+			colWidths[i] = hw
 		}
 	}
 	for _, row := range td.rows {
 		for i, cell := range row {
-			if i < numCols && len(cell) > colWidths[i] {
-				colWidths[i] = len(cell)
+			if i < numCols {
+				cw := lipgloss.Width(cell)
+				if cw > colWidths[i] {
+					colWidths[i] = cw
+				}
 			}
 		}
 	}
@@ -105,7 +109,7 @@ func (r *Renderer) tableHSep(colWidths []int, borderColor lipgloss.Color, left, 
 }
 
 func (r *Renderer) padCell(text string, width int) string {
-	padding := width - len(text)
+	padding := width - lipgloss.Width(text)
 	if padding < 0 {
 		padding = 0
 	}
