@@ -113,7 +113,13 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 	}
 
 	// Build the container using lipgloss
-	contentWidth := r.width - 4 // account for border + padding
+	// Subtract right margin so the box doesn't run to the terminal edge
+	const rightMargin = 2
+	boxWidth := r.width - rightMargin
+	if boxWidth < 22 {
+		boxWidth = 22
+	}
+	contentWidth := boxWidth - 4 // account for border + padding
 	if contentWidth < 20 {
 		contentWidth = 20
 	}
@@ -137,7 +143,7 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 		BorderStyle(border).
 		BorderForeground(borderColor).
 		Padding(0, 1).
-		Width(r.width).
+		Width(boxWidth).
 		Render(paddedContent)
 
 	// Replace the top border line to include the header label
