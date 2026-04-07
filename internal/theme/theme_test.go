@@ -1,6 +1,18 @@
 package theme
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/charmbracelet/lipgloss"
+)
+
+func colorString(c lipgloss.TerminalColor) string {
+	if c == nil {
+		return ""
+	}
+	return fmt.Sprint(c)
+}
 
 func TestDarkThemeNotNil(t *testing.T) {
 	th := DarkTheme()
@@ -12,6 +24,12 @@ func TestDarkThemeNotNil(t *testing.T) {
 	}
 	if th.ChromaStyle != "dracula" {
 		t.Fatalf("DarkTheme ChromaStyle = %q, want %q", th.ChromaStyle, "dracula")
+	}
+	if got := colorString(th.H1.GetForeground()); got != "#9CCFD8" {
+		t.Fatalf("DarkTheme H1 color = %q, want %q", got, "#9CCFD8")
+	}
+	if got := colorString(th.CodeBorder); got != "#393552" {
+		t.Fatalf("DarkTheme CodeBorder = %q, want %q", got, "#393552")
 	}
 }
 
@@ -25,6 +43,12 @@ func TestLightThemeNotNil(t *testing.T) {
 	}
 	if th.ChromaStyle != "github" {
 		t.Fatalf("LightTheme ChromaStyle = %q, want %q", th.ChromaStyle, "github")
+	}
+	if got := colorString(th.H1.GetForeground()); got != "#286983" {
+		t.Fatalf("LightTheme H1 color = %q, want %q", got, "#286983")
+	}
+	if got := colorString(th.CodeBorder); got != "#9893A5" {
+		t.Fatalf("LightTheme CodeBorder = %q, want %q", got, "#9893A5")
 	}
 }
 
