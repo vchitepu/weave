@@ -26,13 +26,13 @@ func (r *Renderer) renderHeadingEntering(w util.BufWriter, source []byte, node a
 		styled = r.theme.H3.Render(text)
 	}
 
-	_, _ = w.WriteString(styled)
+	_, _ = w.WriteString(pad + styled)
 	_, _ = w.WriteString("\n")
 
 	// H1 gets a full-width rule
 	if n.Level == 1 {
 		rule := r.theme.HeadingRule.Render(strings.Repeat("─", r.contentWidth()))
-		_, _ = w.WriteString(rule)
+		_, _ = w.WriteString(pad + rule)
 		_, _ = w.WriteString("\n")
 	}
 
@@ -47,7 +47,7 @@ func (r *Renderer) renderThematicBreak(w util.BufWriter, source []byte, node ast
 		return ast.WalkContinue, nil
 	}
 	rule := r.theme.HorizontalRule.Render(strings.Repeat("─", r.contentWidth()))
-	_, _ = w.WriteString(rule)
+	_, _ = w.WriteString(pad + rule)
 	_, _ = w.WriteString("\n\n")
 	return ast.WalkContinue, nil
 }

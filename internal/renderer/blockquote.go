@@ -20,7 +20,7 @@ func (r *Renderer) renderBlockquote(w util.BufWriter, source []byte, node ast.No
 	text = strings.TrimRight(text, "\n")
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
-		_, _ = w.WriteString(bar + " " + line + "\n")
+		_, _ = w.WriteString(pad + bar + " " + line + "\n")
 	}
 	_, _ = w.WriteString("\n")
 

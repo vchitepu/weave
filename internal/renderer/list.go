@@ -50,9 +50,9 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 		if start > 0 {
 			pos = start + pos - 1
 		}
-		_, _ = w.WriteString(fmt.Sprintf("%s%d. ", indent, pos))
+		_, _ = w.WriteString(fmt.Sprintf("%s%s%d. ", pad, indent, pos))
 	} else {
-		_, _ = w.WriteString(fmt.Sprintf("%s• ", indent))
+		_, _ = w.WriteString(fmt.Sprintf("%s%s• ", pad, indent))
 	}
 
 	return ast.WalkContinue, nil

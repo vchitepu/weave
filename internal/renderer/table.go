@@ -51,37 +51,45 @@ func (r *Renderer) renderTable(w util.BufWriter, source []byte, node ast.Node, e
 
 	bStyle := lipgloss.NewStyle().Foreground(borderColor)
 
+	var buf strings.Builder
+
 	// Top border
-	_, _ = w.WriteString(topBorder + "\n")
+	buf.WriteString(topBorder + "\n")
 
 	// Header row
-	_, _ = w.WriteString(bStyle.Render("│"))
+	buf.WriteString(bStyle.Render("│"))
 	for i, h := range td.headers {
 		padded := r.padCell(h, colWidths[i])
 		styled := r.theme.TableHeader.Render(padded)
-		_, _ = w.WriteString(" " + styled + " " + bStyle.Render("│"))
+		buf.WriteString(" " + styled + " " + bStyle.Render("│"))
 	}
-	_, _ = w.WriteString("\n")
+	buf.WriteString("\n")
 
 	// Header separator
-	_, _ = w.WriteString(hSep + "\n")
+	buf.WriteString(hSep + "\n")
 
 	// Data rows
 	for _, row := range td.rows {
-		_, _ = w.WriteString(bStyle.Render("│"))
+		buf.WriteString(bStyle.Render("│"))
 		for i := 0; i < numCols; i++ {
 			cell := ""
 			if i < len(row) {
 				cell = row[i]
 			}
 			padded := r.padCell(cell, colWidths[i])
-			_, _ = w.WriteString(" " + padded + " " + bStyle.Render("│"))
+			buf.WriteString(" " + padded + " " + bStyle.Render("│"))
 		}
-		_, _ = w.WriteString("\n")
+		buf.WriteString("\n")
 	}
 
 	// Bottom border
-	_, _ = w.WriteString(bottomBorder + "\n\n")
+	buf.WriteString(bottomBorder + "\n")
+
+	// Prefix every line with leftPad spaces.
+	for _, line := range strings.Split(strings.TrimRight(buf.String(), "\n"), "\n") {
+		_, _ = w.WriteString(pad + line + "\n")
+	}
+	_, _ = w.WriteString("\n")
 
 	r.tableData = nil
 	return ast.WalkContinue, nil

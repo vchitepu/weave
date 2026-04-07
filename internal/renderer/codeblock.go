@@ -113,8 +113,8 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 	}
 
 	// Build the container using lipgloss
-	// Subtract right margin so the box doesn't run to the terminal edge
-	boxWidth := r.width - rightMargin
+	// Subtract left pad and right margin so the box sits inset from both edges.
+	boxWidth := r.width - leftPad - rightMargin
 	if boxWidth < 22 {
 		boxWidth = 22
 	}
@@ -174,7 +174,14 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 	if len(boxLines) > 1 {
 		rest = boxLines[1]
 	}
-	return topLine + "\n" + rest + "\n\n"
+
+	// Prefix every line of the box with leftPad spaces.
+	allLines := strings.Split(topLine+"\n"+rest, "\n")
+	var padded []string
+	for _, l := range allLines {
+		padded = append(padded, pad+l)
+	}
+	return strings.Join(padded, "\n") + "\n\n"
 }
 
 // highlightCode applies chroma syntax highlighting to the given code.
