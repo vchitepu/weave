@@ -64,6 +64,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 	// Detect terminal width
 	width := widthFlag
+	autoWidth := widthFlag == 0
 	if width == 0 {
 		if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
 			width = w
@@ -71,12 +72,7 @@ func run(cmd *cobra.Command, args []string) error {
 			width = 80
 		}
 	}
-	if width < 20 {
-		width = 20
-	}
-	if width > 120 {
-		width = 120
-	}
+	width = normalizeWidth(width, autoWidth)
 
 	// Validate theme flag
 	if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
@@ -123,4 +119,14 @@ func run(cmd *cobra.Command, args []string) error {
 	// Write directly to stdout
 	_, err = fmt.Fprint(os.Stdout, output)
 	return err
+}
+
+func normalizeWidth(width int, auto bool) int {
+	if width < 20 {
+		return 20
+	}
+	if auto && width > 120 {
+		return 120
+	}
+	return width
 }
