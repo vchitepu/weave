@@ -114,7 +114,6 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 
 	// Build the container using lipgloss
 	// Subtract right margin so the box doesn't run to the terminal edge
-	const rightMargin = 2
 	boxWidth := r.width - rightMargin
 	if boxWidth < 22 {
 		boxWidth = 22

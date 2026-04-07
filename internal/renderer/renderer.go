@@ -13,6 +13,11 @@ import (
 // goldmark's default HTML renderer (which uses 1000).
 const Priority = 100
 
+// rightMargin is the number of columns left empty on the right side of
+// all block-level elements (rules, code containers) so they don't butt
+// against the terminal edge.
+const rightMargin = 2
+
 // Renderer implements goldmark's NodeRenderer interface.
 type Renderer struct {
 	theme     theme.Theme
@@ -60,6 +65,15 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindCodeSpan, r.renderCodeSpan)
 	reg.Register(ast.KindLink, r.renderLink)
 	reg.Register(ast.KindImage, r.renderImage)
+}
+
+// contentWidth returns the usable line width after subtracting the right margin.
+func (r *Renderer) contentWidth() int {
+	w := r.width - rightMargin
+	if w < 20 {
+		w = 20
+	}
+	return w
 }
 
 func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
