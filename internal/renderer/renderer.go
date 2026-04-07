@@ -33,6 +33,10 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	// Inline nodes
 	reg.Register(ast.KindText, r.renderText)
 	reg.Register(ast.KindString, r.renderString)
+	reg.Register(ast.KindEmphasis, r.renderEmphasis)
+	reg.Register(ast.KindCodeSpan, r.renderCodeSpan)
+	reg.Register(ast.KindLink, r.renderLink)
+	reg.Register(ast.KindImage, r.renderImage)
 }
 
 func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
