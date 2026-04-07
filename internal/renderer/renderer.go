@@ -4,14 +4,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/vinaychitepu/shine/internal/theme"
 	"github.com/yuin/goldmark/ast"
+	east "github.com/yuin/goldmark/extension/ast"
 	goldrenderer "github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
 
 // Renderer implements goldmark's NodeRenderer interface.
 type Renderer struct {
-	theme theme.Theme
-	width int
+	theme     theme.Theme
+	width     int
+	tableData *tableState
 }
 
 // New creates a new shine Renderer.
@@ -34,6 +36,12 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindBlockquote, r.renderBlockquote)
 	reg.Register(ast.KindList, r.renderList)
 	reg.Register(ast.KindListItem, r.renderListItem)
+
+	// Table nodes (from goldmark extension)
+	reg.Register(east.KindTable, r.renderTable)
+	reg.Register(east.KindTableHeader, r.renderTableHeader)
+	reg.Register(east.KindTableRow, r.renderTableRow)
+	reg.Register(east.KindTableCell, r.renderTableCell)
 
 	// Inline nodes
 	reg.Register(ast.KindText, r.renderText)
