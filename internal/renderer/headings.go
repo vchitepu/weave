@@ -14,13 +14,7 @@ func (r *Renderer) renderHeadingEntering(w util.BufWriter, source []byte, node a
 
 	n := node.(*ast.Heading)
 
-	var textBuf strings.Builder
-	for c := n.FirstChild(); c != nil; c = c.NextSibling() {
-		if t, ok := c.(*ast.Text); ok {
-			textBuf.Write(t.Segment.Value(source))
-		}
-	}
-	text := textBuf.String()
+	text := collectText(node, source)
 
 	var styled string
 	switch {

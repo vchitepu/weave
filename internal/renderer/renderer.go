@@ -1,13 +1,17 @@
 package renderer
 
 import (
-	"github.com/charmbracelet/lipgloss"
 	"github.com/vinaychitepu/shine/internal/theme"
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
 	goldrenderer "github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
+
+// Priority is the goldmark renderer priority for the shine renderer.
+// Lower values = higher priority. We use 100 to take precedence over
+// goldmark's default HTML renderer (which uses 1000).
+const Priority = 100
 
 // Renderer implements goldmark's NodeRenderer interface.
 type Renderer struct {
@@ -18,6 +22,9 @@ type Renderer struct {
 
 // New creates a new shine Renderer.
 func New(th theme.Theme, width int) *Renderer {
+	if width < 20 {
+		width = 20
+	}
 	return &Renderer{
 		theme: th,
 		width: width,
@@ -61,7 +68,12 @@ func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node
 
 func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
-		_, _ = w.WriteString("\n\n")
+		// Inside a list item, use single newline (the list handles spacing)
+		if node.Parent() != nil && node.Parent().Kind() == ast.KindListItem {
+			_, _ = w.WriteString("\n")
+		} else {
+			_, _ = w.WriteString("\n\n")
+		}
 	}
 	return ast.WalkContinue, nil
 }
@@ -73,7 +85,6 @@ func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, en
 	n := node.(*ast.Text)
 	segment := n.Segment
 	text := segment.Value(source)
-	_ = lipgloss.NewStyle() // ensure lipgloss is used (will be used more later)
 	_, _ = w.Write(text)
 	if n.SoftLineBreak() {
 		_, _ = w.WriteString("\n")

@@ -71,6 +71,14 @@ func run(cmd *cobra.Command, args []string) error {
 			width = 80
 		}
 	}
+	if width < 20 {
+		width = 20
+	}
+
+	// Validate theme flag
+	if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
+		return fmt.Errorf("shine: invalid theme %q (use 'dark' or 'light')", themeFlag)
+	}
 
 	// Detect theme
 	th := theme.Detect(themeFlag)
@@ -82,7 +90,7 @@ func run(cmd *cobra.Command, args []string) error {
 		goldmark.WithRenderer(
 			goldrenderer.NewRenderer(
 				goldrenderer.WithNodeRenderers(
-					util.Prioritized(r, 100),
+					util.Prioritized(r, renderer.Priority),
 				),
 			),
 		),

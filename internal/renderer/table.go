@@ -137,14 +137,9 @@ func (r *Renderer) renderTableRow(w util.BufWriter, source []byte, node ast.Node
 
 func (r *Renderer) renderTableCell(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
-		var text strings.Builder
-		for c := node.FirstChild(); c != nil; c = c.NextSibling() {
-			if t, ok := c.(*ast.Text); ok {
-				text.Write(t.Segment.Value(source))
-			}
-		}
+		text := collectText(node, source)
 		if r.tableData != nil {
-			r.tableData.current = append(r.tableData.current, strings.TrimSpace(text.String()))
+			r.tableData.current = append(r.tableData.current, strings.TrimSpace(text))
 		}
 		return ast.WalkSkipChildren, nil
 	}

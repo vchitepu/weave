@@ -46,3 +46,13 @@ func TestRenderHorizontalRule(t *testing.T) {
 		t.Fatalf("expected text around horizontal rule, got: %q", out)
 	}
 }
+
+func TestRenderH1WithInlineFormatting(t *testing.T) {
+	out := renderMarkdown(t, "# Hello **world**")
+	if !strings.Contains(out, "Hello") {
+		t.Fatalf("expected 'Hello' in heading output, got: %q", out)
+	}
+	if !strings.Contains(out, "world") {
+		t.Fatalf("expected 'world' from bold text in heading output, got: %q", out)
+	}
+}

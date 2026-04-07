@@ -22,7 +22,7 @@ func renderMarkdown(t *testing.T, input string) string {
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
-					util.Prioritized(r, 1000),
+					util.Prioritized(r, Priority),
 				),
 			),
 		),

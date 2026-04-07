@@ -40,3 +40,22 @@ func TestRenderNestedList(t *testing.T) {
 		t.Fatalf("expected 'Inner' in output, got: %q", out)
 	}
 }
+
+func TestRenderListItemsSeparated(t *testing.T) {
+	input := "- Item A\n- Item B\n- Item C"
+	out := renderMarkdown(t, input)
+	// Each item should be on its own line
+	if strings.Contains(out, "A•") || strings.Contains(out, "A  •") {
+		t.Fatalf("list items should not concatenate on same line, got: %q", out)
+	}
+	lines := strings.Split(strings.TrimSpace(out), "\n")
+	bulletLines := 0
+	for _, line := range lines {
+		if strings.Contains(line, "•") {
+			bulletLines++
+		}
+	}
+	if bulletLines < 3 {
+		t.Fatalf("expected at least 3 lines with bullets, got %d in output: %q", bulletLines, out)
+	}
+}

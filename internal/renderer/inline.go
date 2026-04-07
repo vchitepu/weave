@@ -29,13 +29,7 @@ func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node
 
 func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
-		// Collect all child text
-		var text string
-		for c := node.FirstChild(); c != nil; c = c.NextSibling() {
-			if t, ok := c.(*ast.Text); ok {
-				text += string(t.Segment.Value(source))
-			}
-		}
+		text := collectText(node, source)
 		styled := r.theme.InlineCode.Render(" " + text + " ")
 		_, _ = w.WriteString(styled)
 		return ast.WalkSkipChildren, nil
@@ -46,13 +40,7 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node
 func (r *Renderer) renderLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n := node.(*ast.Link)
 	if entering {
-		// Collect link text from children
-		var text string
-		for c := n.FirstChild(); c != nil; c = c.NextSibling() {
-			if t, ok := c.(*ast.Text); ok {
-				text += string(t.Segment.Value(source))
-			}
-		}
+		text := collectText(node, source)
 		linkText := r.theme.LinkText.Render(text)
 		linkURL := r.theme.LinkURL.Render(fmt.Sprintf("(%s)", string(n.Destination)))
 		_, _ = w.WriteString(linkText + " " + linkURL)

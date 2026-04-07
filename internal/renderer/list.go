@@ -17,6 +17,14 @@ func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, en
 
 func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
+		// Ensure each list item ends with a newline.
+		// For loose lists (with paragraphs), renderParagraph handles the newline.
+		// For tight lists (no paragraphs), we need to add it here.
+		// Check if the last child is NOT a paragraph — if so, add a newline.
+		lastChild := node.LastChild()
+		if lastChild == nil || lastChild.Kind() != ast.KindParagraph {
+			_, _ = w.WriteString("\n")
+		}
 		return ast.WalkContinue, nil
 	}
 

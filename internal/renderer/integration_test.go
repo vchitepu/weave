@@ -26,7 +26,7 @@ func TestFullDocumentRender(t *testing.T) {
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
-					util.Prioritized(r, 100),
+					util.Prioritized(r, Priority),
 				),
 			),
 		),
@@ -91,7 +91,7 @@ func TestRenderWithLightTheme(t *testing.T) {
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
-					util.Prioritized(r, 100),
+					util.Prioritized(r, Priority),
 				),
 			),
 		),
@@ -121,7 +121,7 @@ func TestRenderNarrowWidth(t *testing.T) {
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
-					util.Prioritized(r, 100),
+					util.Prioritized(r, Priority),
 				),
 			),
 		),

@@ -24,3 +24,17 @@ func TestRenderNestedBlockquote(t *testing.T) {
 		t.Fatalf("expected inner quote text, got: %q", out)
 	}
 }
+
+func TestRenderMultiLineBlockquote(t *testing.T) {
+	out := renderMarkdown(t, "> Line one\n> Line two\n> Line three")
+	lines := strings.Split(strings.TrimSpace(out), "\n")
+	barCount := 0
+	for _, line := range lines {
+		if strings.Contains(line, "│") {
+			barCount++
+		}
+	}
+	if barCount < 3 {
+		t.Fatalf("expected blockquote bar on at least 3 lines, got %d bars in output: %q", barCount, out)
+	}
+}
