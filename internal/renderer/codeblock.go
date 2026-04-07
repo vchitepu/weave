@@ -137,7 +137,7 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 	}
 	paddedContent := strings.Join(paddedLines, "\n")
 
-	// Build the box with lipgloss
+	// Build the full box with lipgloss (includes its own top border).
 	border := lipgloss.RoundedBorder()
 	box := lipgloss.NewStyle().
 		BorderStyle(border).
@@ -146,26 +146,36 @@ func (r *Renderer) renderCodeContainer(w util.BufWriter, code, lang string) stri
 		Width(boxWidth).
 		Render(paddedContent)
 
-	// Replace the top border line to include the header label
-	boxLines := strings.Split(box, "\n")
-	if len(boxLines) > 0 && headerLabel != "" {
-		topBorder := boxLines[0]
-		labelStr := fmt.Sprintf(" %s ", headerLabel)
-		runes := []rune(topBorder)
-		if len(runes) > 3 {
-			labelRunes := []rune(labelStr)
-			insertEnd := 2 + len(labelRunes)
-			if insertEnd < len(runes) {
-				newTop := make([]rune, 0, len(runes))
-				newTop = append(newTop, runes[:2]...)
-				newTop = append(newTop, labelRunes...)
-				newTop = append(newTop, runes[insertEnd:]...)
-				boxLines[0] = string(newTop)
-			}
+	// Replace the top border line with a hand-crafted one that embeds the
+	// label. We can't slice the lipgloss-rendered line by rune index because
+	// it contains ANSI escape codes; instead we drop lipgloss's top line and
+	// build our own plain-text top border, then color it.
+	bStyle := lipgloss.NewStyle().Foreground(borderColor)
+	// lipgloss Width() sets content width; the outer border adds 2 more columns.
+	// So the visual outer width of the box is boxWidth+2, meaning our hand-crafted
+	// top border needs boxWidth+2 visible rune columns total.
+	outerWidth := boxWidth + 2
+	innerWidth := outerWidth - 2 // subtract the two corner runes
+	var topLine string
+	if headerLabel != "" {
+		label := fmt.Sprintf(" %s ", headerLabel)
+		labelWidth := len([]rune(label))
+		dashCount := innerWidth - labelWidth - 1 // -1 for the leading "─"
+		if dashCount < 0 {
+			dashCount = 0
 		}
+		topLine = bStyle.Render("╭─" + label + strings.Repeat("─", dashCount) + "╮")
+	} else {
+		topLine = bStyle.Render("╭" + strings.Repeat("─", innerWidth) + "╮")
 	}
 
-	return strings.Join(boxLines, "\n") + "\n\n"
+	// Drop lipgloss's first line (its top border) and prepend ours.
+	boxLines := strings.SplitN(box, "\n", 2)
+	rest := ""
+	if len(boxLines) > 1 {
+		rest = boxLines[1]
+	}
+	return topLine + "\n" + rest + "\n\n"
 }
 
 // highlightCode applies chroma syntax highlighting to the given code.
