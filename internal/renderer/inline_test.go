@@ -42,3 +42,10 @@ func TestRenderImage(t *testing.T) {
 		t.Fatalf("expected image alt text in output, got: %q", out)
 	}
 }
+
+func TestRenderStrikethrough(t *testing.T) {
+	out := renderMarkdown(t, "This is ~~deleted~~ text")
+	if !strings.Contains(out, "deleted") {
+		t.Fatalf("expected strikethrough text in output, got: %q", out)
+	}
+}

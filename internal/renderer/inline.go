@@ -71,3 +71,12 @@ func (r *Renderer) renderImage(w util.BufWriter, source []byte, node ast.Node, e
 	}
 	return ast.WalkContinue, nil
 }
+
+func (r *Renderer) renderStrikethrough(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		_, _ = w.WriteString("\033[9m") // strikethrough on
+	} else {
+		_, _ = w.WriteString("\033[29m") // strikethrough off
+	}
+	return ast.WalkContinue, nil
+}

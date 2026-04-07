@@ -7,6 +7,7 @@ import (
 
 	"github.com/vinaychitepu/shine/internal/theme"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
@@ -17,6 +18,7 @@ func renderMarkdown(t *testing.T, input string) string {
 	th := theme.DarkTheme()
 	r := New(th, 80)
 	md := goldmark.New(
+		goldmark.WithExtensions(extension.Table, extension.Strikethrough),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(

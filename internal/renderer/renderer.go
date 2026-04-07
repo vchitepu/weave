@@ -43,6 +43,9 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	reg.Register(east.KindTableRow, r.renderTableRow)
 	reg.Register(east.KindTableCell, r.renderTableCell)
 
+	// Strikethrough (from goldmark extension)
+	reg.Register(east.KindStrikethrough, r.renderStrikethrough)
+
 	// Inline nodes
 	reg.Register(ast.KindText, r.renderText)
 	reg.Register(ast.KindString, r.renderString)
