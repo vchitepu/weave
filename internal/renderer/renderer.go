@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/vinaychitepu/weave/internal/theme"
+	"github.com/vchitepu/weave/internal/theme"
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
 	goldrenderer "github.com/yuin/goldmark/renderer"

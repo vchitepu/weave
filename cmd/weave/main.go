@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/vinaychitepu/weave/internal/pager"
-	"github.com/vinaychitepu/weave/internal/renderer"
-	"github.com/vinaychitepu/weave/internal/theme"
+	"github.com/vchitepu/weave/internal/pager"
+	"github.com/vchitepu/weave/internal/renderer"
+	"github.com/vchitepu/weave/internal/theme"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	goldrenderer "github.com/yuin/goldmark/renderer"
