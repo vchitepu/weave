@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/vinaychitepu/shine/internal/theme"
+	"github.com/vinaychitepu/weave/internal/theme"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer"

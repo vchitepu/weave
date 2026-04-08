@@ -4,14 +4,14 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/vinaychitepu/shine/internal/theme"
+	"github.com/vinaychitepu/weave/internal/theme"
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
 	goldrenderer "github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
 
-// Priority is the goldmark renderer priority for the shine renderer.
+// Priority is the goldmark renderer priority for the weave renderer.
 // Lower values = higher priority. We use 100 to take precedence over
 // goldmark's default HTML renderer (which uses 1000).
 const Priority = 100
@@ -41,7 +41,7 @@ type Renderer struct {
 	paraBuf *strings.Builder
 }
 
-// New creates a new shine Renderer.
+// New creates a new weave Renderer.
 func New(th theme.Theme, width int) *Renderer {
 	if width < 20 {
 		width = 20

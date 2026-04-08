@@ -1,4 +1,4 @@
-module github.com/vinaychitepu/shine
+module github.com/vinaychitepu/weave
 
 go 1.25.1
 

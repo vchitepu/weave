@@ -1,6 +1,6 @@
 # Shine Test Document
 
-This is a test document for **shine**, the terminal Markdown viewer.
+This is a test document for **weave**, the terminal Markdown viewer.
 
 ## Features
 
@@ -20,19 +20,19 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello from shine!")
+	fmt.Println("Hello from weave!")
 }
 ```
 
 ```bash
-$ go build ./cmd/shine
-$ ./shine README.md
+$ go build ./cmd/weave
+$ ./weave README.md
 ```
 
 ```tree
-shine/
+weave/
   cmd/
-    shine/
+    weave/
       main.go
   internal/
     renderer/

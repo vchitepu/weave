@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/vinaychitepu/shine/internal/pager"
-	"github.com/vinaychitepu/shine/internal/renderer"
-	"github.com/vinaychitepu/shine/internal/theme"
+	"github.com/vinaychitepu/weave/internal/pager"
+	"github.com/vinaychitepu/weave/internal/renderer"
+	"github.com/vinaychitepu/weave/internal/theme"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	goldrenderer "github.com/yuin/goldmark/renderer"
@@ -26,7 +26,7 @@ var (
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:     "shine [file]",
+		Use:     "weave [file]",
 		Short:   "A terminal Markdown viewer with rich visual containers",
 		Version: version,
 		Args:    cobra.MaximumNArgs(1),
@@ -49,7 +49,7 @@ func run(cmd *cobra.Command, args []string) error {
 	if len(args) == 1 {
 		input, err = os.ReadFile(args[0])
 		if err != nil {
-			return fmt.Errorf("shine: no such file: %s", args[0])
+			return fmt.Errorf("weave: no such file: %s", args[0])
 		}
 	} else {
 		stat, _ := os.Stdin.Stat()
@@ -58,7 +58,7 @@ func run(cmd *cobra.Command, args []string) error {
 		}
 		input, err = io.ReadAll(os.Stdin)
 		if err != nil {
-			return fmt.Errorf("shine: failed to read stdin: %w", err)
+			return fmt.Errorf("weave: failed to read stdin: %w", err)
 		}
 	}
 
@@ -76,7 +76,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 	// Validate theme flag
 	if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
-		return fmt.Errorf("shine: invalid theme %q (use 'dark' or 'light')", themeFlag)
+		return fmt.Errorf("weave: invalid theme %q (use 'dark' or 'light')", themeFlag)
 	}
 
 	// Detect theme
@@ -98,7 +98,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// Render
 	var buf bytes.Buffer
 	if err := md.Convert(input, &buf); err != nil {
-		return fmt.Errorf("shine: render error: %w", err)
+		return fmt.Errorf("weave: render error: %w", err)
 	}
 
 	output := buf.String()
