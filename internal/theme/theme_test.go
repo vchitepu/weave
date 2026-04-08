@@ -22,8 +22,8 @@ func TestDarkThemeNotNil(t *testing.T) {
 	if th.H1.GetForeground() == nil {
 		t.Fatal("DarkTheme H1 style should have a foreground color")
 	}
-	if th.ChromaStyle != "dracula" {
-		t.Fatalf("DarkTheme ChromaStyle = %q, want %q", th.ChromaStyle, "dracula")
+	if th.ChromaStyle != "github-dark" {
+		t.Fatalf("DarkTheme ChromaStyle = %q, want %q", th.ChromaStyle, "github-dark")
 	}
 	if got := colorString(th.H1.GetForeground()); got != "#8BA4D4" {
 		t.Fatalf("DarkTheme H1 color = %q, want %q", got, "#8BA4D4")
@@ -41,8 +41,8 @@ func TestLightThemeNotNil(t *testing.T) {
 	if th.H1.GetForeground() == nil {
 		t.Fatal("LightTheme H1 style should have a foreground color")
 	}
-	if th.ChromaStyle != "github" {
-		t.Fatalf("LightTheme ChromaStyle = %q, want %q", th.ChromaStyle, "github")
+	if th.ChromaStyle != "xcode" {
+		t.Fatalf("LightTheme ChromaStyle = %q, want %q", th.ChromaStyle, "xcode")
 	}
 	if got := colorString(th.H1.GetForeground()); got != "#3F5F8A" {
 		t.Fatalf("LightTheme H1 color = %q, want %q", got, "#3F5F8A")
@@ -59,8 +59,8 @@ func TestDetectThemeFallbackDark(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("")
-	if th.ChromaStyle != "dracula" {
-		t.Fatalf("Detect fallback: ChromaStyle = %q, want %q (dark)", th.ChromaStyle, "dracula")
+	if th.ChromaStyle != "github-dark" {
+		t.Fatalf("Detect fallback: ChromaStyle = %q, want %q (dark)", th.ChromaStyle, "github-dark")
 	}
 }
 
@@ -70,8 +70,8 @@ func TestDetectThemeExplicitOverride(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("")
-	if th.ChromaStyle != "github" {
-		t.Fatalf("Detect with SHINE_THEME=light: ChromaStyle = %q, want %q", th.ChromaStyle, "github")
+	if th.ChromaStyle != "xcode" {
+		t.Fatalf("Detect with SHINE_THEME=light: ChromaStyle = %q, want %q", th.ChromaStyle, "xcode")
 	}
 }
 
@@ -82,8 +82,8 @@ func TestDetectThemeFlagOverride(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("light")
-	if th.ChromaStyle != "github" {
-		t.Fatalf("Detect with flag=light: ChromaStyle = %q, want %q", th.ChromaStyle, "github")
+	if th.ChromaStyle != "xcode" {
+		t.Fatalf("Detect with flag=light: ChromaStyle = %q, want %q", th.ChromaStyle, "xcode")
 	}
 }
 
@@ -93,8 +93,8 @@ func TestDetectCOLORFGBG_Dark(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("")
-	if th.ChromaStyle != "dracula" {
-		t.Fatalf("COLORFGBG=15;0: ChromaStyle = %q, want %q (dark)", th.ChromaStyle, "dracula")
+	if th.ChromaStyle != "github-dark" {
+		t.Fatalf("COLORFGBG=15;0: ChromaStyle = %q, want %q (dark)", th.ChromaStyle, "github-dark")
 	}
 }
 
@@ -104,8 +104,8 @@ func TestDetectCOLORFGBG_LightMultiSegment(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("")
-	if th.ChromaStyle != "github" {
-		t.Fatalf("COLORFGBG=0;15;255: ChromaStyle = %q, want %q (light)", th.ChromaStyle, "github")
+	if th.ChromaStyle != "xcode" {
+		t.Fatalf("COLORFGBG=0;15;255: ChromaStyle = %q, want %q (light)", th.ChromaStyle, "xcode")
 	}
 }
 
@@ -117,8 +117,8 @@ func TestDetectCOLORFGBG_InvalidFallsThrough(t *testing.T) {
 	// "invalid" has no semicolon, so COLORFGBG parsing fails.
 	// No TERM_PROGRAM set, so falls through to default dark.
 	th := Detect("")
-	if th.ChromaStyle != "dracula" {
-		t.Fatalf("COLORFGBG=invalid: ChromaStyle = %q, want %q (dark fallback)", th.ChromaStyle, "dracula")
+	if th.ChromaStyle != "github-dark" {
+		t.Fatalf("COLORFGBG=invalid: ChromaStyle = %q, want %q (dark fallback)", th.ChromaStyle, "github-dark")
 	}
 }
 
@@ -128,7 +128,7 @@ func TestDetectTERM_PROGRAM_AppleTerminal(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "Apple_Terminal")
 
 	th := Detect("")
-	if th.ChromaStyle != "github" {
-		t.Fatalf("TERM_PROGRAM=Apple_Terminal: ChromaStyle = %q, want %q (light)", th.ChromaStyle, "github")
+	if th.ChromaStyle != "xcode" {
+		t.Fatalf("TERM_PROGRAM=Apple_Terminal: ChromaStyle = %q, want %q (light)", th.ChromaStyle, "xcode")
 	}
 }

@@ -62,7 +62,7 @@ func DarkTheme() Theme {
 		CodeBorder:  lipgloss.Color("#3A3F4B"),
 		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#B7C0D0")).Faint(true),
 		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#262B36")),
-		ChromaStyle: "dracula",
+		ChromaStyle: "github-dark",
 
 		TreeBorder:    lipgloss.Color("#5D7290"),
 		DiagramBorder: lipgloss.Color("#7B74A6"),
@@ -99,7 +99,7 @@ func LightTheme() Theme {
 		CodeBorder:  lipgloss.Color("#C2C7D0"),
 		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#5F6B7A")).Faint(true),
 		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#EEF1F5")),
-		ChromaStyle: "github",
+		ChromaStyle: "xcode",
 
 		TreeBorder:    lipgloss.Color("#5E7699"),
 		DiagramBorder: lipgloss.Color("#7D73A3"),
