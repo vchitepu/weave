@@ -22,8 +22,8 @@ func detectMode(flagValue string) string {
 		return flagValue
 	}
 
-	// 2. SHINE_THEME env var
-	if env := os.Getenv("SHINE_THEME"); env == "dark" || env == "light" {
+	// 2. WEAVE_THEME env var
+	if env := os.Getenv("WEAVE_THEME"); env == "dark" || env == "light" {
 		return env
 	}
 
