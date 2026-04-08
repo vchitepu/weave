@@ -54,31 +54,31 @@ func DarkTheme() Theme {
 		Strikethrough: lipgloss.NewStyle().Strikethrough(true),
 		Dim:           lipgloss.NewStyle().Faint(true),
 
-		H1:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#9CCFD8")),
-		H2:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#C4A7E7")),
-		H3:          lipgloss.NewStyle().Foreground(lipgloss.Color("#F6C177")),
-		HeadingRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#393552")),
+		H1:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#8BA4D4")),
+		H2:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#A8A0D6")),
+		H3:          lipgloss.NewStyle().Foreground(lipgloss.Color("#C9A86A")),
+		HeadingRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3F4B")),
 
-		CodeBorder:  lipgloss.Color("#393552"),
-		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#E0DEF4")).Faint(true),
-		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#2A273F")),
+		CodeBorder:  lipgloss.Color("#3A3F4B"),
+		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#B7C0D0")).Faint(true),
+		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#262B36")),
 		ChromaStyle: "dracula",
 
-		TreeBorder:    lipgloss.Color("#9CCFD8"),
-		DiagramBorder: lipgloss.Color("#C4A7E7"),
-		ShellBorder:   lipgloss.Color("#F6C177"),
+		TreeBorder:    lipgloss.Color("#5D7290"),
+		DiagramBorder: lipgloss.Color("#7B74A6"),
+		ShellBorder:   lipgloss.Color("#9F8656"),
 
-		BlockquoteBar:  lipgloss.NewStyle().Foreground(lipgloss.Color("#393552")),
-		BlockquoteText: lipgloss.NewStyle().Foreground(lipgloss.Color("#908CAA")),
+		BlockquoteBar:  lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3F4B")),
+		BlockquoteText: lipgloss.NewStyle().Foreground(lipgloss.Color("#9BA3B2")),
 
-		TableHeader: lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#9CCFD8")),
-		TableBorder: lipgloss.Color("#393552"),
+		TableHeader: lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#8BA4D4")),
+		TableBorder: lipgloss.Color("#3A3F4B"),
 
-		LinkText: lipgloss.NewStyle().Foreground(lipgloss.Color("#9CCFD8")),
+		LinkText: lipgloss.NewStyle().Foreground(lipgloss.Color("#7FA3C8")),
 		LinkURL:  lipgloss.NewStyle().Faint(true),
 		ImageAlt: lipgloss.NewStyle().Italic(true).Faint(true),
 
-		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#393552")),
+		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3F4B")),
 	}
 }
 
@@ -91,30 +91,30 @@ func LightTheme() Theme {
 		Strikethrough: lipgloss.NewStyle().Strikethrough(true),
 		Dim:           lipgloss.NewStyle().Faint(true),
 
-		H1:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#286983")),
-		H2:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#907AA9")),
-		H3:          lipgloss.NewStyle().Foreground(lipgloss.Color("#EA9D34")),
-		HeadingRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#9893A5")),
+		H1:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#3F5F8A")),
+		H2:          lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#665E95")),
+		H3:          lipgloss.NewStyle().Foreground(lipgloss.Color("#8D6B3F")),
+		HeadingRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#C2C7D0")),
 
-		CodeBorder:  lipgloss.Color("#9893A5"),
-		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#575279")).Faint(true),
-		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#F2E9E1")),
+		CodeBorder:  lipgloss.Color("#C2C7D0"),
+		CodeHeader:  lipgloss.NewStyle().Foreground(lipgloss.Color("#5F6B7A")).Faint(true),
+		InlineCode:  lipgloss.NewStyle().Background(lipgloss.Color("#EEF1F5")),
 		ChromaStyle: "github",
 
-		TreeBorder:    lipgloss.Color("#286983"),
-		DiagramBorder: lipgloss.Color("#907AA9"),
-		ShellBorder:   lipgloss.Color("#EA9D34"),
+		TreeBorder:    lipgloss.Color("#5E7699"),
+		DiagramBorder: lipgloss.Color("#7D73A3"),
+		ShellBorder:   lipgloss.Color("#9A7B52"),
 
-		BlockquoteBar:  lipgloss.NewStyle().Foreground(lipgloss.Color("#9893A5")),
-		BlockquoteText: lipgloss.NewStyle().Foreground(lipgloss.Color("#797593")),
+		BlockquoteBar:  lipgloss.NewStyle().Foreground(lipgloss.Color("#C2C7D0")),
+		BlockquoteText: lipgloss.NewStyle().Foreground(lipgloss.Color("#6C7483")),
 
-		TableHeader: lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#286983")),
-		TableBorder: lipgloss.Color("#9893A5"),
+		TableHeader: lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#3F5F8A")),
+		TableBorder: lipgloss.Color("#C2C7D0"),
 
-		LinkText: lipgloss.NewStyle().Foreground(lipgloss.Color("#286983")),
+		LinkText: lipgloss.NewStyle().Foreground(lipgloss.Color("#496A92")),
 		LinkURL:  lipgloss.NewStyle().Faint(true),
 		ImageAlt: lipgloss.NewStyle().Italic(true).Faint(true),
 
-		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#9893A5")),
+		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#C2C7D0")),
 	}
 }

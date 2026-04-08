@@ -25,11 +25,11 @@ func TestDarkThemeNotNil(t *testing.T) {
 	if th.ChromaStyle != "dracula" {
 		t.Fatalf("DarkTheme ChromaStyle = %q, want %q", th.ChromaStyle, "dracula")
 	}
-	if got := colorString(th.H1.GetForeground()); got != "#9CCFD8" {
-		t.Fatalf("DarkTheme H1 color = %q, want %q", got, "#9CCFD8")
+	if got := colorString(th.H1.GetForeground()); got != "#8BA4D4" {
+		t.Fatalf("DarkTheme H1 color = %q, want %q", got, "#8BA4D4")
 	}
-	if got := colorString(th.CodeBorder); got != "#393552" {
-		t.Fatalf("DarkTheme CodeBorder = %q, want %q", got, "#393552")
+	if got := colorString(th.CodeBorder); got != "#3A3F4B" {
+		t.Fatalf("DarkTheme CodeBorder = %q, want %q", got, "#3A3F4B")
 	}
 }
 
@@ -44,11 +44,11 @@ func TestLightThemeNotNil(t *testing.T) {
 	if th.ChromaStyle != "github" {
 		t.Fatalf("LightTheme ChromaStyle = %q, want %q", th.ChromaStyle, "github")
 	}
-	if got := colorString(th.H1.GetForeground()); got != "#286983" {
-		t.Fatalf("LightTheme H1 color = %q, want %q", got, "#286983")
+	if got := colorString(th.H1.GetForeground()); got != "#3F5F8A" {
+		t.Fatalf("LightTheme H1 color = %q, want %q", got, "#3F5F8A")
 	}
-	if got := colorString(th.CodeBorder); got != "#9893A5" {
-		t.Fatalf("LightTheme CodeBorder = %q, want %q", got, "#9893A5")
+	if got := colorString(th.CodeBorder); got != "#C2C7D0" {
+		t.Fatalf("LightTheme CodeBorder = %q, want %q", got, "#C2C7D0")
 	}
 }
 
