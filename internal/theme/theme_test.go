@@ -54,7 +54,7 @@ func TestLightThemeNotNil(t *testing.T) {
 
 func TestDetectThemeFallbackDark(t *testing.T) {
 	// Clear all env vars that could influence detection.
-	t.Setenv("SHINE_THEME", "")
+	t.Setenv("WEAVE_THEME", "")
 	t.Setenv("COLORFGBG", "")
 	t.Setenv("TERM_PROGRAM", "")
 
@@ -65,19 +65,19 @@ func TestDetectThemeFallbackDark(t *testing.T) {
 }
 
 func TestDetectThemeExplicitOverride(t *testing.T) {
-	t.Setenv("SHINE_THEME", "light")
+	t.Setenv("WEAVE_THEME", "light")
 	t.Setenv("COLORFGBG", "")
 	t.Setenv("TERM_PROGRAM", "")
 
 	th := Detect("")
 	if th.ChromaStyle != "xcode" {
-		t.Fatalf("Detect with SHINE_THEME=light: ChromaStyle = %q, want %q", th.ChromaStyle, "xcode")
+		t.Fatalf("Detect with WEAVE_THEME=light: ChromaStyle = %q, want %q", th.ChromaStyle, "xcode")
 	}
 }
 
 func TestDetectThemeFlagOverride(t *testing.T) {
 	// Flag should take priority over env vars.
-	t.Setenv("SHINE_THEME", "dark")
+	t.Setenv("WEAVE_THEME", "dark")
 	t.Setenv("COLORFGBG", "")
 	t.Setenv("TERM_PROGRAM", "")
 
@@ -88,7 +88,7 @@ func TestDetectThemeFlagOverride(t *testing.T) {
 }
 
 func TestDetectCOLORFGBG_Dark(t *testing.T) {
-	t.Setenv("SHINE_THEME", "")
+	t.Setenv("WEAVE_THEME", "")
 	t.Setenv("COLORFGBG", "15;0")
 	t.Setenv("TERM_PROGRAM", "")
 
@@ -99,7 +99,7 @@ func TestDetectCOLORFGBG_Dark(t *testing.T) {
 }
 
 func TestDetectCOLORFGBG_LightMultiSegment(t *testing.T) {
-	t.Setenv("SHINE_THEME", "")
+	t.Setenv("WEAVE_THEME", "")
 	t.Setenv("COLORFGBG", "0;15;255")
 	t.Setenv("TERM_PROGRAM", "")
 
@@ -110,7 +110,7 @@ func TestDetectCOLORFGBG_LightMultiSegment(t *testing.T) {
 }
 
 func TestDetectCOLORFGBG_InvalidFallsThrough(t *testing.T) {
-	t.Setenv("SHINE_THEME", "")
+	t.Setenv("WEAVE_THEME", "")
 	t.Setenv("COLORFGBG", "invalid")
 	t.Setenv("TERM_PROGRAM", "")
 
@@ -123,7 +123,7 @@ func TestDetectCOLORFGBG_InvalidFallsThrough(t *testing.T) {
 }
 
 func TestDetectTERM_PROGRAM_AppleTerminal(t *testing.T) {
-	t.Setenv("SHINE_THEME", "")
+	t.Setenv("WEAVE_THEME", "")
 	t.Setenv("COLORFGBG", "")
 	t.Setenv("TERM_PROGRAM", "Apple_Terminal")
 
