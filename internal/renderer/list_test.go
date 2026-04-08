@@ -75,3 +75,15 @@ func TestRenderLongListItemWrapsWithinRendererWidth(t *testing.T) {
 		}
 	}
 }
+
+func TestRenderNestedListItemsAreOnSeparateLines(t *testing.T) {
+	input := "- First item\n    - Second item\n        - Nested item\n    - Another nested"
+	out := renderMarkdown(t, input)
+
+	if strings.Contains(out, "Second itemNested item") {
+		t.Fatalf("expected nested list items to render on separate lines, got: %q", out)
+	}
+	if !strings.Contains(out, "Nested item") {
+		t.Fatalf("expected nested item text in output, got: %q", out)
+	}
+}

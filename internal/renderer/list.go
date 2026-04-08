@@ -38,6 +38,15 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 		return ast.WalkContinue, nil
 	}
 
+	// If a tight list item is currently buffering text, flush it before
+	// starting a nested or sibling list item so prefixes don't concatenate.
+	if r.tightListItemActive && r.paraBuf != nil && len(r.listPrefixWidths) > 0 {
+		r.writeWrappedListParagraph(w, r.paraBuf.String(), r.listPrefixWidths[len(r.listPrefixWidths)-1])
+		_, _ = w.WriteString("\n")
+		r.paraBuf = nil
+		r.tightListItemActive = false
+	}
+
 	// Calculate indent depth
 	depth := 0
 	parent := node.Parent()
