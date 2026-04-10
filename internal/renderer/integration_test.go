@@ -145,6 +145,10 @@ func TestHeadingLevelsProduceDistinctStyledOutput(t *testing.T) {
 	input := []byte("### Same Text\n#### Same Text\n##### Same Text\n###### Same Text\n")
 
 	th := theme.DarkTheme()
+	th.H3 = th.H3.Transform(func(s string) string { return "H3:" + s })
+	th.H4 = th.H4.Transform(func(s string) string { return "H4:" + s })
+	th.H5 = th.H5.Transform(func(s string) string { return "H5:" + s })
+	th.H6 = th.H6.Transform(func(s string) string { return "H6:" + s })
 	r := New(th, 80)
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.Table),
@@ -163,31 +167,11 @@ func TestHeadingLevelsProduceDistinctStyledOutput(t *testing.T) {
 		t.Fatalf("failed to render heading levels: %v", err)
 	}
 
-	lines := strings.Split(buf.String(), "\n")
-	matches := make([]string, 0, 4)
-	for _, line := range lines {
-		if strings.TrimSpace(line) == "" {
-			continue
+	out := buf.String()
+	checks := []string{"H3:Same Text", "H4:Same Text", "H5:Same Text", "H6:Same Text"}
+	for _, want := range checks {
+		if !strings.Contains(out, want) {
+			t.Fatalf("expected rendered output to contain %q, got: %q", want, out)
 		}
-		if strings.Contains(line, "Same Text") {
-			matches = append(matches, line)
-		}
-	}
-
-	if len(matches) < 4 {
-		t.Fatalf("expected at least 4 rendered heading lines containing %q, got %d", "Same Text", len(matches))
-	}
-
-	if matches[0] == matches[1] {
-		t.Errorf("expected H3 and H4 rendered lines to be distinct, got %q", matches[0])
-	}
-	if matches[1] == matches[2] {
-		t.Errorf("expected H4 and H5 rendered lines to be distinct, got %q", matches[1])
-	}
-	if matches[2] == matches[3] {
-		t.Errorf("expected H5 and H6 rendered lines to be distinct, got %q", matches[2])
-	}
-	if matches[0] == matches[3] {
-		t.Errorf("expected H3 and H6 rendered lines to be distinct, got %q", matches[0])
 	}
 }

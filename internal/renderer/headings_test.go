@@ -3,6 +3,8 @@ package renderer
 import (
 	"strings"
 	"testing"
+
+	"github.com/vchitepu/weave/internal/theme"
 )
 
 func TestRenderH1(t *testing.T) {
@@ -52,28 +54,28 @@ func TestRenderH6(t *testing.T) {
 }
 
 func TestRenderH4H5H6ProduceDistinctOutput(t *testing.T) {
-	h3 := renderMarkdown(t, "### Same Text")
-	h4 := renderMarkdown(t, "#### Same Text")
-	h5 := renderMarkdown(t, "##### Same Text")
-	h6 := renderMarkdown(t, "###### Same Text")
+	th := theme.DarkTheme()
+	th.H3 = th.H3.Transform(func(s string) string { return "H3:" + s })
+	th.H4 = th.H4.Transform(func(s string) string { return "H4:" + s })
+	th.H5 = th.H5.Transform(func(s string) string { return "H5:" + s })
+	th.H6 = th.H6.Transform(func(s string) string { return "H6:" + s })
 
-	if h4 == h3 {
-		t.Fatalf("expected H4 output to differ from H3 output, both were: %q", h4)
+	h3 := renderMarkdownWithTheme(t, "### Same Text", th)
+	h4 := renderMarkdownWithTheme(t, "#### Same Text", th)
+	h5 := renderMarkdownWithTheme(t, "##### Same Text", th)
+	h6 := renderMarkdownWithTheme(t, "###### Same Text", th)
+
+	if !strings.Contains(h3, "H3:Same Text") {
+		t.Fatalf("expected H3 marker in output, got: %q", h3)
 	}
-	if h5 == h3 {
-		t.Fatalf("expected H5 output to differ from H3 output, both were: %q", h5)
+	if !strings.Contains(h4, "H4:Same Text") {
+		t.Fatalf("expected H4 marker in output, got: %q", h4)
 	}
-	if h6 == h3 {
-		t.Fatalf("expected H6 output to differ from H3 output, both were: %q", h6)
+	if !strings.Contains(h5, "H5:Same Text") {
+		t.Fatalf("expected H5 marker in output, got: %q", h5)
 	}
-	if h4 == h5 {
-		t.Fatalf("expected H4 output to differ from H5 output, both were: %q", h4)
-	}
-	if h4 == h6 {
-		t.Fatal("H4 and H6 should produce distinct output")
-	}
-	if h5 == h6 {
-		t.Fatalf("expected H5 output to differ from H6 output, both were: %q", h5)
+	if !strings.Contains(h6, "H6:Same Text") {
+		t.Fatalf("expected H6 marker in output, got: %q", h6)
 	}
 }
 

@@ -16,6 +16,11 @@ import (
 func renderMarkdown(t *testing.T, input string) string {
 	t.Helper()
 	th := theme.DarkTheme()
+	return renderMarkdownWithTheme(t, input, th)
+}
+
+func renderMarkdownWithTheme(t *testing.T, input string, th theme.Theme) string {
+	t.Helper()
 	r := New(th, 80)
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.Table, extension.Strikethrough),
