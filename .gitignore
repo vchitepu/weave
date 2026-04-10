@@ -1,3 +1,5 @@
 # Build binary
 /weave
 
+# Local git worktrees
+/.worktrees/
