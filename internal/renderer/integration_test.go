@@ -45,6 +45,9 @@ func TestFullDocumentRender(t *testing.T) {
 		want string
 	}{
 		{"H1 heading", "Shine Test Document"},
+		{"H4 heading", "Detailed Notes"},
+		{"H5 heading", "Implementation Details"},
+		{"H6 heading", "Footnotes"},
 		{"bold text", "bold text"},
 		{"italic text", "italic text"},
 		{"inline code", "inline code"},

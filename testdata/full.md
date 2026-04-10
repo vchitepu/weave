@@ -12,6 +12,18 @@ Check out [Go](https://golang.org) for more info.
 
 ![screenshot](screenshot.png)
 
+#### Detailed Notes
+
+Some H4-level content.
+
+##### Implementation Details
+
+Some H5-level content.
+
+###### Footnotes
+
+Some H6-level content.
+
 ## Code Blocks
 
 ```go
