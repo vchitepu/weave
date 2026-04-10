@@ -52,6 +52,32 @@ func TestLightThemeNotNil(t *testing.T) {
 	}
 }
 
+func TestDarkThemeH4H5H6(t *testing.T) {
+	th := DarkTheme()
+	if got := colorString(th.H4.GetForeground()); got != "#A88A55" {
+		t.Fatalf("DarkTheme H4 color = %q, want %q", got, "#A88A55")
+	}
+	if got := colorString(th.H5.GetForeground()); got != "#876C42" {
+		t.Fatalf("DarkTheme H5 color = %q, want %q", got, "#876C42")
+	}
+	if got := colorString(th.H6.GetForeground()); got != "#665030" {
+		t.Fatalf("DarkTheme H6 color = %q, want %q", got, "#665030")
+	}
+}
+
+func TestLightThemeH4H5H6(t *testing.T) {
+	th := LightTheme()
+	if got := colorString(th.H4.GetForeground()); got != "#A07850" {
+		t.Fatalf("LightTheme H4 color = %q, want %q", got, "#A07850")
+	}
+	if got := colorString(th.H5.GetForeground()); got != "#B38A63" {
+		t.Fatalf("LightTheme H5 color = %q, want %q", got, "#B38A63")
+	}
+	if got := colorString(th.H6.GetForeground()); got != "#C69C78" {
+		t.Fatalf("LightTheme H6 color = %q, want %q", got, "#C69C78")
+	}
+}
+
 func TestDetectThemeFallbackDark(t *testing.T) {
 	// Clear all env vars that could influence detection.
 	t.Setenv("WEAVE_THEME", "")
