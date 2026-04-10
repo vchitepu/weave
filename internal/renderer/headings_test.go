@@ -69,6 +69,9 @@ func TestRenderH4H5H6ProduceDistinctOutput(t *testing.T) {
 	if h4 == h5 {
 		t.Fatalf("expected H4 output to differ from H5 output, both were: %q", h4)
 	}
+	if h4 == h6 {
+		t.Fatal("H4 and H6 should produce distinct output")
+	}
 	if h5 == h6 {
 		t.Fatalf("expected H5 output to differ from H6 output, both were: %q", h5)
 	}
