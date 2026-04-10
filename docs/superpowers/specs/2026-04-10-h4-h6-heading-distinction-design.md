@@ -38,7 +38,7 @@ No prefix markers (####, #####, ######) will be added — the feature is purely 
 | H5 (new) | `#B38A63` | Further lightened |
 | H6 (new) | `#C69C78` | Clearly lighter/lower-contrast |
 
-All H4–H6 styles use bold weight, consistent with H1–H3.
+All H4–H6 styles use no bold weight, consistent with H3 (note: H1 and H2 use bold, but H3 does not).
 
 ## Affected Files
 
