@@ -3,6 +3,8 @@ package renderer
 import (
 	"strings"
 	"testing"
+
+	"github.com/vchitepu/weave/internal/theme"
 )
 
 func TestRenderH1(t *testing.T) {
@@ -30,10 +32,50 @@ func TestRenderH3(t *testing.T) {
 	}
 }
 
-func TestRenderH4UsesH3Style(t *testing.T) {
+func TestRenderH4(t *testing.T) {
 	out := renderMarkdown(t, "#### Deep Section")
 	if !strings.Contains(out, "Deep Section") {
 		t.Fatalf("expected H4 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH5(t *testing.T) {
+	out := renderMarkdown(t, "##### Deep Section")
+	if !strings.Contains(out, "Deep Section") {
+		t.Fatalf("expected H5 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH6(t *testing.T) {
+	out := renderMarkdown(t, "###### Deep Section")
+	if !strings.Contains(out, "Deep Section") {
+		t.Fatalf("expected H6 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH4H5H6ProduceDistinctOutput(t *testing.T) {
+	th := theme.DarkTheme()
+	th.H3 = th.H3.Transform(func(s string) string { return "H3:" + s })
+	th.H4 = th.H4.Transform(func(s string) string { return "H4:" + s })
+	th.H5 = th.H5.Transform(func(s string) string { return "H5:" + s })
+	th.H6 = th.H6.Transform(func(s string) string { return "H6:" + s })
+
+	h3 := renderMarkdownWithTheme(t, "### Same Text", th)
+	h4 := renderMarkdownWithTheme(t, "#### Same Text", th)
+	h5 := renderMarkdownWithTheme(t, "##### Same Text", th)
+	h6 := renderMarkdownWithTheme(t, "###### Same Text", th)
+
+	if !strings.Contains(h3, "H3:Same Text") {
+		t.Fatalf("expected H3 marker in output, got: %q", h3)
+	}
+	if !strings.Contains(h4, "H4:Same Text") {
+		t.Fatalf("expected H4 marker in output, got: %q", h4)
+	}
+	if !strings.Contains(h5, "H5:Same Text") {
+		t.Fatalf("expected H5 marker in output, got: %q", h5)
+	}
+	if !strings.Contains(h6, "H6:Same Text") {
+		t.Fatalf("expected H6 marker in output, got: %q", h6)
 	}
 }
 

@@ -17,13 +17,21 @@ func (r *Renderer) renderHeadingEntering(w util.BufWriter, source []byte, node a
 	text := collectText(node, source)
 
 	var styled string
-	switch {
-	case n.Level == 1:
+	switch n.Level {
+	case 1:
 		styled = r.theme.H1.Render(text)
-	case n.Level == 2:
+	case 2:
 		styled = r.theme.H2.Render(text)
-	default:
+	case 3:
 		styled = r.theme.H3.Render(text)
+	case 4:
+		styled = r.theme.H4.Render(text)
+	case 5:
+		styled = r.theme.H5.Render(text)
+	case 6:
+		styled = r.theme.H6.Render(text)
+	default:
+		styled = r.theme.H6.Render(text)
 	}
 
 	_, _ = w.WriteString(pad + styled)
