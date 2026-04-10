@@ -30,10 +30,47 @@ func TestRenderH3(t *testing.T) {
 	}
 }
 
-func TestRenderH4UsesH3Style(t *testing.T) {
+func TestRenderH4(t *testing.T) {
 	out := renderMarkdown(t, "#### Deep Section")
 	if !strings.Contains(out, "Deep Section") {
 		t.Fatalf("expected H4 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH5(t *testing.T) {
+	out := renderMarkdown(t, "##### Deep Section")
+	if !strings.Contains(out, "Deep Section") {
+		t.Fatalf("expected H5 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH6(t *testing.T) {
+	out := renderMarkdown(t, "###### Deep Section")
+	if !strings.Contains(out, "Deep Section") {
+		t.Fatalf("expected H6 output to contain 'Deep Section', got: %q", out)
+	}
+}
+
+func TestRenderH4H5H6ProduceDistinctOutput(t *testing.T) {
+	h3 := renderMarkdown(t, "### Same Text")
+	h4 := renderMarkdown(t, "#### Same Text")
+	h5 := renderMarkdown(t, "##### Same Text")
+	h6 := renderMarkdown(t, "###### Same Text")
+
+	if h4 == h3 {
+		t.Fatalf("expected H4 output to differ from H3 output, both were: %q", h4)
+	}
+	if h5 == h3 {
+		t.Fatalf("expected H5 output to differ from H3 output, both were: %q", h5)
+	}
+	if h6 == h3 {
+		t.Fatalf("expected H6 output to differ from H3 output, both were: %q", h6)
+	}
+	if h4 == h5 {
+		t.Fatalf("expected H4 output to differ from H5 output, both were: %q", h4)
+	}
+	if h5 == h6 {
+		t.Fatalf("expected H5 output to differ from H6 output, both were: %q", h5)
 	}
 }
 
