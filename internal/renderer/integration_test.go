@@ -140,3 +140,54 @@ func TestRenderNarrowWidth(t *testing.T) {
 		t.Errorf("expected output at narrow width, got %d bytes", buf.Len())
 	}
 }
+
+func TestHeadingLevelsProduceDistinctStyledOutput(t *testing.T) {
+	input := []byte("### Same Text\n#### Same Text\n##### Same Text\n###### Same Text\n")
+
+	th := theme.DarkTheme()
+	r := New(th, 80)
+	md := goldmark.New(
+		goldmark.WithExtensions(extension.Table),
+		goldmark.WithRenderer(
+			renderer.NewRenderer(
+				renderer.WithNodeRenderers(
+					util.Prioritized(r, Priority),
+				),
+			),
+		),
+	)
+
+	var buf bytes.Buffer
+	err := md.Convert(input, &buf)
+	if err != nil {
+		t.Fatalf("failed to render heading levels: %v", err)
+	}
+
+	lines := strings.Split(buf.String(), "\n")
+	matches := make([]string, 0, 4)
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		if strings.Contains(line, "Same Text") {
+			matches = append(matches, line)
+		}
+	}
+
+	if len(matches) < 4 {
+		t.Fatalf("expected at least 4 rendered heading lines containing %q, got %d", "Same Text", len(matches))
+	}
+
+	if matches[0] == matches[1] {
+		t.Errorf("expected H3 and H4 rendered lines to be distinct, got %q", matches[0])
+	}
+	if matches[1] == matches[2] {
+		t.Errorf("expected H4 and H5 rendered lines to be distinct, got %q", matches[1])
+	}
+	if matches[2] == matches[3] {
+		t.Errorf("expected H5 and H6 rendered lines to be distinct, got %q", matches[2])
+	}
+	if matches[0] == matches[3] {
+		t.Errorf("expected H3 and H6 rendered lines to be distinct, got %q", matches[0])
+	}
+}
