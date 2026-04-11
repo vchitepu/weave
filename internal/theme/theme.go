@@ -46,6 +46,10 @@ type Theme struct {
 
 	// Horizontal rule
 	HorizontalRule lipgloss.Style
+
+	// Task list checkboxes
+	TaskChecked   lipgloss.Style
+	TaskUnchecked lipgloss.Style
 }
 
 // DarkTheme returns the built-in dark theme.
@@ -85,6 +89,9 @@ func DarkTheme() Theme {
 		ImageAlt: lipgloss.NewStyle().Italic(true).Faint(true),
 
 		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#3A3F4B")),
+
+		TaskChecked:   lipgloss.NewStyle().Foreground(lipgloss.Color("#6BBF8A")),
+		TaskUnchecked: lipgloss.NewStyle().Foreground(lipgloss.Color("#5A5F6B")),
 	}
 }
 
@@ -125,5 +132,8 @@ func LightTheme() Theme {
 		ImageAlt: lipgloss.NewStyle().Italic(true).Faint(true),
 
 		HorizontalRule: lipgloss.NewStyle().Foreground(lipgloss.Color("#C2C7D0")),
+
+		TaskChecked:   lipgloss.NewStyle().Foreground(lipgloss.Color("#3A8C5C")),
+		TaskUnchecked: lipgloss.NewStyle().Foreground(lipgloss.Color("#9BA3B2")),
 	}
 }

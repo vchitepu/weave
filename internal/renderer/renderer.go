@@ -114,6 +114,9 @@ func (r *Renderer) RegisterFuncs(reg goldrenderer.NodeRendererFuncRegisterer) {
 	// Strikethrough (from goldmark extension)
 	reg.Register(east.KindStrikethrough, r.renderStrikethrough)
 
+	// Task list checkboxes (from goldmark extension)
+	reg.Register(east.KindTaskCheckBox, r.renderTaskCheckBox)
+
 	// Inline nodes
 	reg.Register(ast.KindText, r.renderText)
 	reg.Register(ast.KindString, r.renderString)

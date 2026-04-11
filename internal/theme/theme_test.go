@@ -78,6 +78,32 @@ func TestLightThemeH4H5H6(t *testing.T) {
 	}
 }
 
+func TestDarkThemeTaskCheckboxStyles(t *testing.T) {
+	th := DarkTheme()
+	if th.TaskChecked.GetForeground() == nil {
+		t.Fatal("DarkTheme TaskChecked should have a foreground color")
+	}
+	if got := colorString(th.TaskChecked.GetForeground()); got != "#6BBF8A" {
+		t.Fatalf("DarkTheme TaskChecked color = %q, want %q", got, "#6BBF8A")
+	}
+	if th.TaskUnchecked.GetForeground() == nil {
+		t.Fatal("DarkTheme TaskUnchecked should have a foreground color")
+	}
+	if got := colorString(th.TaskUnchecked.GetForeground()); got != "#5A5F6B" {
+		t.Fatalf("DarkTheme TaskUnchecked color = %q, want %q", got, "#5A5F6B")
+	}
+}
+
+func TestLightThemeTaskCheckboxStyles(t *testing.T) {
+	th := LightTheme()
+	if got := colorString(th.TaskChecked.GetForeground()); got != "#3A8C5C" {
+		t.Fatalf("LightTheme TaskChecked color = %q, want %q", got, "#3A8C5C")
+	}
+	if got := colorString(th.TaskUnchecked.GetForeground()); got != "#9BA3B2" {
+		t.Fatalf("LightTheme TaskUnchecked color = %q, want %q", got, "#9BA3B2")
+	}
+}
+
 func TestDetectThemeFallbackDark(t *testing.T) {
 	// Clear all env vars that could influence detection.
 	t.Setenv("WEAVE_THEME", "")

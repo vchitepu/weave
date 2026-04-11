@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/yuin/goldmark/ast"
+	east "github.com/yuin/goldmark/extension/ast"
 	"github.com/yuin/goldmark/util"
 )
 
@@ -60,7 +61,31 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 
 	// Determine bullet or number
 	list := node.Parent().(*ast.List)
-	if list.IsOrdered() {
+
+	// Check if this list item has a task checkbox — if so, suppress the bullet
+	// and write only the indent prefix. The checkbox symbol is rendered by
+	// renderTaskCheckBox.
+	isTask := false
+	for child := node.FirstChild(); child != nil; child = child.NextSibling() {
+		// TaskCheckBox is an inline node inside a TextBlock/Paragraph child
+		for inline := child.FirstChild(); inline != nil; inline = inline.NextSibling() {
+			if inline.Kind() == east.KindTaskCheckBox {
+				isTask = true
+				break
+			}
+		}
+		if isTask {
+			break
+		}
+	}
+
+	if isTask {
+		prefix := fmt.Sprintf("%s%s", pad, indent)
+		// +2 accounts for the checkbox symbol + space ("✓ " or "○ ") written by
+		// renderTaskCheckBox, so continuation lines of wrapped text align correctly.
+		r.listPrefixWidths = append(r.listPrefixWidths, lipgloss.Width(prefix)+2)
+		_, _ = w.WriteString(prefix)
+	} else if list.IsOrdered() {
 		pos := 1
 		for sib := node.PreviousSibling(); sib != nil; sib = sib.PreviousSibling() {
 			pos++
@@ -83,5 +108,18 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 		r.tightListItemActive = true
 	}
 
+	return ast.WalkContinue, nil
+}
+
+func (r *Renderer) renderTaskCheckBox(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if !entering {
+		return ast.WalkContinue, nil
+	}
+	n := node.(*east.TaskCheckBox)
+	if n.IsChecked {
+		_, _ = w.WriteString(r.theme.TaskChecked.Render("✓") + " ")
+	} else {
+		_, _ = w.WriteString(r.theme.TaskUnchecked.Render("○") + " ")
+	}
 	return ast.WalkContinue, nil
 }

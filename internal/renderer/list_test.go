@@ -76,6 +76,66 @@ func TestRenderLongListItemWrapsWithinRendererWidth(t *testing.T) {
 	}
 }
 
+func TestRenderTaskListChecked(t *testing.T) {
+	input := "- [x] Done item"
+	out := renderMarkdown(t, input)
+	if !strings.Contains(out, "✓") {
+		t.Fatalf("expected checked symbol '✓' in output, got: %q", out)
+	}
+	if !strings.Contains(out, "Done item") {
+		t.Fatalf("expected 'Done item' in output, got: %q", out)
+	}
+	// Should NOT contain a bullet — the checkbox replaces it
+	if strings.Contains(out, "•") {
+		t.Fatalf("task list item should not have bullet '•', got: %q", out)
+	}
+}
+
+func TestRenderTaskListUnchecked(t *testing.T) {
+	input := "- [ ] Pending item"
+	out := renderMarkdown(t, input)
+	if !strings.Contains(out, "○") {
+		t.Fatalf("expected unchecked symbol '○' in output, got: %q", out)
+	}
+	if !strings.Contains(out, "Pending item") {
+		t.Fatalf("expected 'Pending item' in output, got: %q", out)
+	}
+	if strings.Contains(out, "•") {
+		t.Fatalf("task list item should not have bullet '•', got: %q", out)
+	}
+}
+
+func TestRenderTaskListMixed(t *testing.T) {
+	input := "- [x] Done\n- [ ] Todo\n- [X] Also done"
+	out := renderMarkdown(t, input)
+	if !strings.Contains(out, "✓") {
+		t.Fatalf("expected '✓' in output, got: %q", out)
+	}
+	if !strings.Contains(out, "○") {
+		t.Fatalf("expected '○' in output, got: %q", out)
+	}
+	if !strings.Contains(out, "Done") {
+		t.Fatalf("expected 'Done' in output, got: %q", out)
+	}
+	if !strings.Contains(out, "Todo") {
+		t.Fatalf("expected 'Todo' in output, got: %q", out)
+	}
+}
+
+func TestRenderLongTaskListItemWrapsWithinRendererWidth(t *testing.T) {
+	input := "- [x] This is a very long task list item that should wrap within the renderer width boundary without exceeding eighty columns of terminal output"
+	out := renderMarkdown(t, input)
+
+	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		if w := lipgloss.Width(line); w > 80 {
+			t.Fatalf("expected task list output line width <= 80, got %d in line %q", w, line)
+		}
+	}
+}
+
 func TestRenderNestedListItemsAreOnSeparateLines(t *testing.T) {
 	input := "- First item\n    - Second item\n        - Nested item\n    - Another nested"
 	out := renderMarkdown(t, input)

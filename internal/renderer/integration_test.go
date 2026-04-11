@@ -22,7 +22,7 @@ func TestFullDocumentRender(t *testing.T) {
 	th := theme.DarkTheme()
 	r := New(th, 80)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table),
+		goldmark.WithExtensions(extension.Table, extension.TaskList),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
@@ -68,6 +68,9 @@ func TestFullDocumentRender(t *testing.T) {
 		{"table content", "Headings"},
 		{"table border", "─"},
 		{"horizontal rule", "─"},
+		{"task checked", "✓"},
+		{"task unchecked", "○"},
+		{"task list text", "Completed task"},
 	}
 
 	for _, c := range checks {
@@ -90,7 +93,7 @@ func TestRenderWithLightTheme(t *testing.T) {
 	th := theme.LightTheme()
 	r := New(th, 120)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table),
+		goldmark.WithExtensions(extension.Table, extension.TaskList),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
@@ -120,7 +123,7 @@ func TestRenderNarrowWidth(t *testing.T) {
 	th := theme.DarkTheme()
 	r := New(th, 40)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table),
+		goldmark.WithExtensions(extension.Table, extension.TaskList),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
@@ -151,7 +154,7 @@ func TestHeadingLevelsProduceDistinctStyledOutput(t *testing.T) {
 	th.H6 = th.H6.Transform(func(s string) string { return "H6:" + s })
 	r := New(th, 80)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table),
+		goldmark.WithExtensions(extension.Table, extension.TaskList),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(
