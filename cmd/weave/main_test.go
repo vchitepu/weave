@@ -77,3 +77,17 @@ func TestFileSeparator_RuleDoesNotExceedTerminalWidth(t *testing.T) {
 		t.Fatalf("fileSeparator() rule line width = %d, want <= 20; output=%q", got, sep)
 	}
 }
+
+func TestRenderFile_MissingFile(t *testing.T) {
+	missingPath := "/tmp/does-not-exist-weave-test.md"
+
+	err := run(nil, []string{missingPath})
+	if err == nil {
+		t.Fatalf("run() error = nil, want missing-file error")
+	}
+
+	want := "weave: no such file: " + missingPath
+	if got := err.Error(); got != want {
+		t.Fatalf("run() error = %q, want %q", got, want)
+	}
+}
