@@ -14,6 +14,7 @@ A terminal Markdown viewer with rich visual containers. Renders Markdown with st
 - Auto-paging via `$PAGER` when output exceeds terminal height
 - Pipe-friendly — skips paging when stdout is not a TTY
 - Multiple-file rendering with section separators between files
+- Web viewer mode with live reload on file changes
 
 ## Installation
 
@@ -52,6 +53,18 @@ weave --width 100 README.md
 
 # Render multiple files with separators
 weave file1.md file2.md file3.md
+
+# Launch web viewer
+weave --web README.md
+
+# Web viewer on custom port
+weave --web --port 8080 README.md
+
+# Web viewer with multiple files
+weave --web file1.md file2.md
+
+# Pipe to web viewer
+cat README.md | weave --web
 ```
 
 ## Flags
@@ -60,6 +73,8 @@ weave file1.md file2.md file3.md
 |------|---------|-------------|
 | `--theme` | auto-detected | Theme to use: `dark` or `light` |
 | `--width` | auto-detected | Override terminal width (cols) |
+| `--web` | `false` | Launch web viewer in browser |
+| `--port` | `7331` | HTTP port for web viewer |
 | `--version` | | Print version and exit |
 | `--help` | | Print usage and exit |
 
@@ -88,6 +103,7 @@ weave detects your terminal theme in this order:
 - `--line-numbers` for fenced code blocks
 - `--watch` mode to re-render on file changes
 - `--wrap off` mode for terminal-native wrapping control
+- `--web` edit mode for in-browser Markdown editing
 
 ## License
 
