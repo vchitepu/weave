@@ -69,6 +69,23 @@ weave detects your terminal theme in this order:
 4. Terminal program heuristics (`Apple_Terminal` → light)
 5. Falls back to `dark`
 
+## Future Directions
+
+### Rendering Improvements
+
+- Footnote support with bottom-of-document references
+- Definition lists with dedicated term/definition styling
+- `--no-color` / `--plain` output mode for ANSI-free rendering
+- Highlight spans for `==marked text==`
+- Superscript and subscript rendering
+
+### UX Improvements
+
+- `--line-numbers` for fenced code blocks
+- `--watch` mode to re-render on file changes
+- Multiple-file rendering (`weave file1.md file2.md`) with section separators
+- `--wrap off` mode for terminal-native wrapping control
+
 ## License
 
 MIT
