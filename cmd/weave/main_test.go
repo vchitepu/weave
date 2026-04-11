@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -78,16 +79,42 @@ func TestFileSeparator_RuleDoesNotExceedTerminalWidth(t *testing.T) {
 	}
 }
 
+func TestRenderFile_ValidFile(t *testing.T) {
+	tmpFile, err := os.CreateTemp(t.TempDir(), "weave-*.md")
+	if err != nil {
+		t.Fatalf("CreateTemp() error = %v", err)
+	}
+	defer tmpFile.Close()
+
+	if _, err := tmpFile.WriteString("# Hello\n"); err != nil {
+		t.Fatalf("WriteString() error = %v", err)
+	}
+
+	md := buildMarkdown(theme.DarkTheme(), 80)
+
+	got, err := renderFile(tmpFile.Name(), md)
+	if err != nil {
+		t.Fatalf("renderFile() error = %v", err)
+	}
+	if strings.TrimSpace(got) == "" {
+		t.Fatalf("renderFile() output should be non-empty")
+	}
+	if !strings.Contains(got, "Hello") {
+		t.Fatalf("renderFile() output missing expected content: %q", got)
+	}
+}
+
 func TestRenderFile_MissingFile(t *testing.T) {
 	missingPath := "/tmp/does-not-exist-weave-test.md"
+	md := buildMarkdown(theme.DarkTheme(), 80)
 
-	err := run(nil, []string{missingPath})
+	_, err := renderFile(missingPath, md)
 	if err == nil {
-		t.Fatalf("run() error = nil, want missing-file error")
+		t.Fatalf("renderFile() error = nil, want missing-file error")
 	}
 
 	want := "weave: no such file: " + missingPath
 	if got := err.Error(); got != want {
-		t.Fatalf("run() error = %q, want %q", got, want)
+		t.Fatalf("renderFile() error = %q, want %q", got, want)
 	}
 }

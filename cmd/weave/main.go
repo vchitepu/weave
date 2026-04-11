@@ -88,18 +88,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// Detect theme
 	th := theme.Detect(themeFlag)
 
-	// Build goldmark with our renderer
-	r := renderer.New(th, width)
-	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table, extension.Strikethrough, extension.TaskList),
-		goldmark.WithRenderer(
-			goldrenderer.NewRenderer(
-				goldrenderer.WithNodeRenderers(
-					util.Prioritized(r, renderer.Priority),
-				),
-			),
-		),
-	)
+	md := buildMarkdown(th, width)
 
 	// Render
 	var buf bytes.Buffer
@@ -147,4 +136,33 @@ func fileSeparator(filename string, width int, th theme.Theme) string {
 	label := th.Dim.Render(filename)
 
 	return "\n" + separatorPad + rule + "\n" + separatorPad + label + "\n\n"
+}
+
+func buildMarkdown(th theme.Theme, width int) goldmark.Markdown {
+	r := renderer.New(th, width)
+
+	return goldmark.New(
+		goldmark.WithExtensions(extension.Table, extension.Strikethrough, extension.TaskList),
+		goldmark.WithRenderer(
+			goldrenderer.NewRenderer(
+				goldrenderer.WithNodeRenderers(
+					util.Prioritized(r, renderer.Priority),
+				),
+			),
+		),
+	)
+}
+
+func renderFile(path string, md goldmark.Markdown) (string, error) {
+	input, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("weave: no such file: %s", path)
+	}
+
+	var buf bytes.Buffer
+	if err := md.Convert(input, &buf); err != nil {
+		return "", fmt.Errorf("weave: render error for %s: %w", path, err)
+	}
+
+	return buf.String(), nil
 }
