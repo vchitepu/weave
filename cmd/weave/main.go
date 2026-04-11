@@ -139,8 +139,8 @@ func normalizeWidth(width int, auto bool) int {
 
 func fileSeparator(filename string, width int, th theme.Theme) string {
 	contentWidth := width - separatorRightMargin - separatorLeftPad
-	if contentWidth < 20 {
-		contentWidth = 20
+	if contentWidth < 1 {
+		contentWidth = 1
 	}
 
 	rule := th.HorizontalRule.Render(strings.Repeat("─", contentWidth))

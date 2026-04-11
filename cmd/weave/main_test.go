@@ -1,11 +1,19 @@
 package main
 
 import (
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/vchitepu/weave/internal/theme"
 )
+
+var ansiPattern = regexp.MustCompile(`\x1b\[[0-9;]*m`)
+
+func visibleWidth(s string) int {
+	plain := ansiPattern.ReplaceAllString(s, "")
+	return len([]rune(plain))
+}
 
 func TestNormalizeWidth_AutoWidthCappedAt120(t *testing.T) {
 	if got := normalizeWidth(221, true); got != 120 {
@@ -52,5 +60,20 @@ func TestFileSeparator_EndsWithNewline(t *testing.T) {
 
 	if !strings.HasSuffix(sep, "\n") {
 		t.Fatalf("fileSeparator() should end with newline, got: %q", sep)
+	}
+}
+
+func TestFileSeparator_RuleDoesNotExceedTerminalWidth(t *testing.T) {
+	th := theme.DarkTheme()
+
+	sep := fileSeparator("notes.md", 20, th)
+	lines := strings.Split(strings.TrimRight(sep, "\n"), "\n")
+	if len(lines) < 2 {
+		t.Fatalf("fileSeparator() unexpected output: %q", sep)
+	}
+
+	ruleLine := lines[1]
+	if got := visibleWidth(ruleLine); got > 20 {
+		t.Fatalf("fileSeparator() rule line width = %d, want <= 20; output=%q", got, sep)
 	}
 }
