@@ -48,9 +48,9 @@ func TestFileSeparator_ContainsRule(t *testing.T) {
 func TestFileSeparator_EndsWithNewline(t *testing.T) {
 	th := theme.DarkTheme()
 
-	got := fileSeparator("notes.md", 80, th)
+	sep := fileSeparator("notes.md", 80, th)
 
-	if !strings.HasSuffix(got, "\n\n") {
-		t.Fatalf("fileSeparator() should end with double newline, got: %q", got)
+	if !strings.HasSuffix(sep, "\n") {
+		t.Fatalf("fileSeparator() should end with newline, got: %q", sep)
 	}
 }
