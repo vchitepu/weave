@@ -9,6 +9,7 @@ A terminal Markdown viewer with rich visual containers. Renders Markdown with st
 - Tables with box-drawing borders and column alignment
 - Blockquotes with bar markers, word-wrapped to terminal width
 - Ordered and unordered lists with nested indentation
+- Task list checkboxes with checked/unchecked symbols
 - Dark and light themes with auto-detection
 - Auto-paging via `$PAGER` when output exceeds terminal height
 - Pipe-friendly — skips paging when stdout is not a TTY
