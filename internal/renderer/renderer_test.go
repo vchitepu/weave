@@ -23,7 +23,7 @@ func renderMarkdownWithTheme(t *testing.T, input string, th theme.Theme) string 
 	t.Helper()
 	r := New(th, 80)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table, extension.Strikethrough),
+		goldmark.WithExtensions(extension.Table, extension.Strikethrough, extension.TaskList),
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
 				renderer.WithNodeRenderers(

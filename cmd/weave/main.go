@@ -85,7 +85,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// Build goldmark with our renderer
 	r := renderer.New(th, width)
 	md := goldmark.New(
-		goldmark.WithExtensions(extension.Table, extension.Strikethrough),
+		goldmark.WithExtensions(extension.Table, extension.Strikethrough, extension.TaskList),
 		goldmark.WithRenderer(
 			goldrenderer.NewRenderer(
 				goldrenderer.WithNodeRenderers(
