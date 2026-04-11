@@ -13,6 +13,7 @@ A terminal Markdown viewer with rich visual containers. Renders Markdown with st
 - Dark and light themes with auto-detection
 - Auto-paging via `$PAGER` when output exceeds terminal height
 - Pipe-friendly — skips paging when stdout is not a TTY
+- Multiple-file rendering with section separators between files
 
 ## Installation
 
@@ -48,6 +49,9 @@ weave --theme light README.md
 
 # Override terminal width
 weave --width 100 README.md
+
+# Render multiple files with separators
+weave file1.md file2.md file3.md
 ```
 
 ## Flags
@@ -83,7 +87,6 @@ weave detects your terminal theme in this order:
 
 - `--line-numbers` for fenced code blocks
 - `--watch` mode to re-render on file changes
-- Multiple-file rendering (`weave file1.md file2.md`) with section separators
 - `--wrap off` mode for terminal-native wrapping control
 
 ## License
