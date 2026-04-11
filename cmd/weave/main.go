@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/vchitepu/weave/internal/pager"
 	"github.com/vchitepu/weave/internal/renderer"
+	"github.com/vchitepu/weave/internal/server"
 	"github.com/vchitepu/weave/internal/theme"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
@@ -22,6 +23,8 @@ var (
 	version   = "dev"
 	themeFlag string
 	widthFlag int
+	webFlag   bool
+	portFlag  int
 )
 
 const (
@@ -41,6 +44,8 @@ func main() {
 
 	rootCmd.Flags().StringVar(&themeFlag, "theme", "", "Override theme (dark|light)")
 	rootCmd.Flags().IntVar(&widthFlag, "width", 0, "Override terminal width")
+	rootCmd.Flags().BoolVar(&webFlag, "web", false, "Launch web viewer instead of terminal output")
+	rootCmd.Flags().IntVar(&portFlag, "port", 7331, "HTTP port for web viewer")
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
@@ -48,6 +53,10 @@ func main() {
 }
 
 func run(cmd *cobra.Command, args []string) error {
+	if webFlag {
+		return runWeb(cmd, args)
+	}
+
 	// Multi-file mode: render each file with separators.
 	if len(args) >= 2 {
 		// Detect terminal width
@@ -217,4 +226,37 @@ func renderFile(path string, md goldmark.Markdown) (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+func runWeb(cmd *cobra.Command, args []string) error {
+	// Validate theme
+	if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
+		return fmt.Errorf("weave: invalid theme %q (use 'dark' or 'light')", themeFlag)
+	}
+	th := theme.Detect(themeFlag)
+
+	var inputs []server.Input
+
+	if len(args) == 0 {
+		// Stdin mode
+		stat, _ := os.Stdin.Stat()
+		if (stat.Mode() & os.ModeCharDevice) != 0 {
+			return cmd.Help()
+		}
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			return fmt.Errorf("weave: failed to read stdin: %w", err)
+		}
+		inputs = append(inputs, server.Input{Data: data})
+	} else {
+		// File mode — validate all files exist before starting server
+		for _, path := range args {
+			if _, err := os.Stat(path); err != nil {
+				return fmt.Errorf("weave: no such file: %s", path)
+			}
+			inputs = append(inputs, server.Input{Path: path})
+		}
+	}
+
+	return server.Start(inputs, th, portFlag)
 }

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/vchitepu/weave/internal/theme"
 )
 
@@ -180,5 +181,40 @@ func TestMultiFileOutput(t *testing.T) {
 	secondFilename := tmp2.Name()
 	if !strings.Contains(output, secondFilename) {
 		t.Errorf("output should contain second filename %q in separator", secondFilename)
+	}
+}
+
+func TestWebFlag_MissingFile(t *testing.T) {
+	// Save and restore global flags
+	origWeb := webFlag
+	origPort := portFlag
+	origTheme := themeFlag
+	origWidth := widthFlag
+	defer func() {
+		webFlag = origWeb
+		portFlag = origPort
+		themeFlag = origTheme
+		widthFlag = origWidth
+	}()
+
+	webFlag = true
+	portFlag = 7331
+	themeFlag = ""
+	widthFlag = 0
+
+	rootCmd := &cobra.Command{
+		Use:  "weave [file...]",
+		Args: cobra.ArbitraryArgs,
+		RunE: run,
+	}
+	rootCmd.Flags().StringVar(&themeFlag, "theme", "", "")
+	rootCmd.Flags().IntVar(&widthFlag, "width", 0, "")
+	rootCmd.Flags().BoolVar(&webFlag, "web", false, "")
+	rootCmd.Flags().IntVar(&portFlag, "port", 7331, "")
+
+	rootCmd.SetArgs([]string{"--web", "/nonexistent/file.md"})
+	err := rootCmd.Execute()
+	if err == nil {
+		t.Fatal("expected error for missing file with --web")
 	}
 }
