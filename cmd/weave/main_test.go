@@ -118,3 +118,67 @@ func TestRenderFile_MissingFile(t *testing.T) {
 		t.Fatalf("renderFile() error = %q, want %q", got, want)
 	}
 }
+
+func TestMultiFileOutput(t *testing.T) {
+	tmp1, err := os.CreateTemp(t.TempDir(), "weave-multi1-*.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tmp1.WriteString("# First\n\nAlpha content\n"); err != nil {
+		t.Fatal(err)
+	}
+	if err := tmp1.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	tmp2, err := os.CreateTemp(t.TempDir(), "weave-multi2-*.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tmp2.WriteString("# Second\n\nBeta content\n"); err != nil {
+		t.Fatal(err)
+	}
+	if err := tmp2.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	th := theme.DarkTheme()
+	md := buildMarkdown(th, 80)
+
+	var combined strings.Builder
+	paths := []string{tmp1.Name(), tmp2.Name()}
+	for i, path := range paths {
+		if i > 0 {
+			combined.WriteString(fileSeparator(path, 80, th))
+		}
+
+		rendered, err := renderFile(path, md)
+		if err != nil {
+			t.Fatalf("renderFile(%s): %v", path, err)
+		}
+		combined.WriteString(rendered)
+	}
+
+	output := combined.String()
+
+	if !strings.Contains(output, "First") {
+		t.Error("output should contain 'First'")
+	}
+	if !strings.Contains(output, "Alpha") {
+		t.Error("output should contain 'Alpha'")
+	}
+	if !strings.Contains(output, "Second") {
+		t.Error("output should contain 'Second'")
+	}
+	if !strings.Contains(output, "Beta") {
+		t.Error("output should contain 'Beta'")
+	}
+	if !strings.Contains(output, "─") {
+		t.Error("output should contain a rule character in the separator")
+	}
+
+	secondFilename := tmp2.Name()
+	if !strings.Contains(output, secondFilename) {
+		t.Errorf("output should contain second filename %q in separator", secondFilename)
+	}
+}
