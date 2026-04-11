@@ -68,6 +68,9 @@ func TestFullDocumentRender(t *testing.T) {
 		{"table content", "Headings"},
 		{"table border", "─"},
 		{"horizontal rule", "─"},
+		{"task checked", "✓"},
+		{"task unchecked", "○"},
+		{"task list text", "Completed task"},
 	}
 
 	for _, c := range checks {

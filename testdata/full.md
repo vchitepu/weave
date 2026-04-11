@@ -97,6 +97,12 @@ graph TD
 | Tables | Done | Box-drawing |
 | Lists | Done | Nested support |
 
+## Task Lists
+
+- [x] Completed task
+- [ ] Pending task
+- [x] Another done item
+
 ---
 
 That's all folks.
