@@ -24,6 +24,12 @@ var (
 	widthFlag int
 )
 
+const (
+	separatorLeftPad     = 2
+	separatorRightMargin = 2
+	separatorPad         = "  "
+)
+
 func main() {
 	rootCmd := &cobra.Command{
 		Use:     "weave [file]",
@@ -129,4 +135,16 @@ func normalizeWidth(width int, auto bool) int {
 		return 120
 	}
 	return width
+}
+
+func fileSeparator(filename string, width int, th theme.Theme) string {
+	contentWidth := width - separatorRightMargin - separatorLeftPad
+	if contentWidth < 20 {
+		contentWidth = 20
+	}
+
+	rule := th.HorizontalRule.Render(strings.Repeat("─", contentWidth))
+	label := th.Dim.Render(filename)
+
+	return "\n" + separatorPad + rule + "\n" + separatorPad + label + "\n\n"
 }
