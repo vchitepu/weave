@@ -122,6 +122,20 @@ func TestRenderTaskListMixed(t *testing.T) {
 	}
 }
 
+func TestRenderLongTaskListItemWrapsWithinRendererWidth(t *testing.T) {
+	input := "- [x] This is a very long task list item that should wrap within the renderer width boundary without exceeding eighty columns of terminal output"
+	out := renderMarkdown(t, input)
+
+	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		if w := lipgloss.Width(line); w > 80 {
+			t.Fatalf("expected task list output line width <= 80, got %d in line %q", w, line)
+		}
+	}
+}
+
 func TestRenderNestedListItemsAreOnSeparateLines(t *testing.T) {
 	input := "- First item\n    - Second item\n        - Nested item\n    - Another nested"
 	out := renderMarkdown(t, input)

@@ -81,6 +81,8 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 
 	if isTask {
 		prefix := fmt.Sprintf("%s%s", pad, indent)
+		// +2 accounts for the checkbox symbol + space ("✓ " or "○ ") written by
+		// renderTaskCheckBox, so continuation lines of wrapped text align correctly.
 		r.listPrefixWidths = append(r.listPrefixWidths, lipgloss.Width(prefix)+2)
 		_, _ = w.WriteString(prefix)
 	} else if list.IsOrdered() {
