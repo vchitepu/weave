@@ -32,10 +32,10 @@ const (
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:     "weave [file]",
+		Use:     "weave [file...]",
 		Short:   "A terminal Markdown viewer with rich visual containers",
 		Version: version,
-		Args:    cobra.MaximumNArgs(1),
+		Args:    cobra.ArbitraryArgs,
 		RunE:    run,
 	}
 
@@ -48,6 +48,58 @@ func main() {
 }
 
 func run(cmd *cobra.Command, args []string) error {
+	// Multi-file mode: render each file with separators.
+	if len(args) >= 2 {
+		// Detect terminal width
+		width := widthFlag
+		autoWidth := widthFlag == 0
+		if width == 0 {
+			if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+				width = w
+			} else {
+				width = 80
+			}
+		}
+		width = normalizeWidth(width, autoWidth)
+
+		// Validate theme flag
+		if themeFlag != "" && themeFlag != "dark" && themeFlag != "light" {
+			return fmt.Errorf("weave: invalid theme %q (use 'dark' or 'light')", themeFlag)
+		}
+		th := theme.Detect(themeFlag)
+		md := buildMarkdown(th, width)
+
+		var combined strings.Builder
+		for i, path := range args {
+			if i > 0 {
+				combined.WriteString(fileSeparator(path, width, th))
+			}
+			rendered, err := renderFile(path, md)
+			if err != nil {
+				return err
+			}
+			combined.WriteString(rendered)
+		}
+
+		output := combined.String()
+
+		// Determine if we should page
+		isTTY := term.IsTerminal(int(os.Stdout.Fd()))
+		if isTTY {
+			_, termHeight, err := term.GetSize(int(os.Stdout.Fd()))
+			if err != nil {
+				termHeight = 24
+			}
+			lineCount := strings.Count(output, "\n")
+			if pager.ShouldPage(lineCount, termHeight) {
+				return pager.Run(output)
+			}
+		}
+
+		_, err := fmt.Fprint(os.Stdout, output)
+		return err
+	}
+
 	// Read input
 	var input []byte
 	var err error
